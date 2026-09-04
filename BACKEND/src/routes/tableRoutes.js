@@ -1,0 +1,21 @@
+const express = require('express');
+const router = express.Router();
+const {
+  getTables,
+  createTable,
+  updateTable,
+  deleteTable
+} = require('../controllers/tableController');
+const { protect, authorize } = require('../middleware/auth');
+
+router
+  .route('/')
+  .get(getTables)
+  .post(protect, authorize('admin'), createTable);
+
+router
+  .route('/:id')
+  .put(protect, authorize('admin', 'staff'), updateTable)
+  .delete(protect, authorize('admin'), deleteTable);
+
+module.exports = router;
