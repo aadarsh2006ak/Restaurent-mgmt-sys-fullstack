@@ -5,7 +5,8 @@ const {
   getMenuItemById,
   createMenuItem,
   updateMenuItem,
-  deleteMenuItem
+  deleteMenuItem,
+  addMenuItemReview
 } = require('../controllers/menuController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -19,5 +20,8 @@ router
   .get(getMenuItemById)
   .put(protect, authorize('admin', 'staff'), updateMenuItem)
   .delete(protect, authorize('admin', 'staff'), deleteMenuItem);
+
+// Rate & review a dish
+router.post('/:id/rate', addMenuItemReview);
 
 module.exports = router;

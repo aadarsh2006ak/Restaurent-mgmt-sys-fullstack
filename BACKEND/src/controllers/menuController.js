@@ -63,7 +63,9 @@ exports.createMenuItem = async (req, res) => {
       imageUrl,
       isVeg: isVeg !== undefined ? isVeg : true,
       spiceLevel: spiceLevel || 'Medium',
-      isAvailable: isAvailable !== undefined ? isAvailable : true
+      isAvailable: isAvailable !== undefined ? isAvailable : true,
+      rating: 4.8,
+      numReviews: 1
     });
 
     res.status(201).json({ success: true, data: menuItem });
@@ -105,6 +107,52 @@ exports.deleteMenuItem = async (req, res) => {
 
     await menuItem.deleteOne();
     res.status(200).json({ success: true, message: 'Menu item deleted' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Add rating and review to menu item
+// @route   POST /api/menu/:id/rate
+// @access  Public (Optional Customer Auth)
+exports.addMenuItemReview = async (req, res) => {
+  try {
+    const { rating, comment, userName } = req.body;
+    const ratingNum = Number(rating);
+
+    if (!ratingNum || ratingNum < 1 || ratingNum > 5) {
+      return res.status(400).json({ success: false, message: 'Rating must be between 1 and 5' });
+    }
+
+    const menuItem = await MenuItem.findById(req.params.id);
+    if (!menuItem) {
+      return res.status(404).json({ success: false, message: 'Menu item not found' });
+    }
+
+    const nameToUse = (req.user && req.user.name) || userName || 'Valued Guest';
+
+    const newReview = {
+      user: req.user ? req.user._id : undefined,
+      userName: nameToUse,
+      rating: ratingNum,
+      comment: comment || '',
+      createdAt: new Date()
+    };
+
+    menuItem.reviews.push(newReview);
+
+    // Calculate updated average
+    const totalStars = menuItem.reviews.reduce((acc, item) => item.rating + acc, 0);
+    menuItem.numReviews = menuItem.reviews.length;
+    menuItem.rating = parseFloat((totalStars / menuItem.reviews.length).toFixed(1));
+
+    await menuItem.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Review submitted successfully',
+      data: menuItem
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

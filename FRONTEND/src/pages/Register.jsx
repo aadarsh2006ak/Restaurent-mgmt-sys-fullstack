@@ -28,15 +28,15 @@ const Register = () => {
   };
 
   return (
-    <div className="fade-in" style={{ padding: '40px 24px 80px', maxWidth: '450px', margin: '0 auto' }}>
-      <div className="glass-panel" style={{ padding: '40px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: 'var(--color-gold)' }}>Create Account</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '6px' }}>Join us to access exclusive features and manage orders.</p>
+    <div className="fade-in page-wrapper" style={{ maxWidth: '450px', margin: '20px auto 60px' }}>
+      <div className="glass-panel" style={{ padding: 'clamp(20px, 5vw, 36px)' }}>
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 4vw, 2rem)', color: 'var(--color-gold)' }}>Create Account</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', marginTop: '4px' }}>Join us to access exclusive features and manage orders.</p>
         </div>
 
         {error && (
-          <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '12px', borderRadius: '6px', fontSize: '0.9rem', marginBottom: '20px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
+          <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '10px', borderRadius: '6px', fontSize: '0.86rem', marginBottom: '18px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
             {error}
           </div>
         )}
@@ -70,7 +70,7 @@ const Register = () => {
             />
           </div>
 
-          <div className="form-group" style={{ marginBottom: '28px' }}>
+          <div className="form-group" style={{ marginBottom: '24px' }}>
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Lock size={14} /> Password
             </label>
@@ -94,7 +94,7 @@ const Register = () => {
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '24px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.86rem', color: 'var(--text-muted)' }}>
           Already have an account?{' '}
           <Link to="/login" style={{ color: 'var(--color-gold)', fontWeight: 600 }}>
             Sign In

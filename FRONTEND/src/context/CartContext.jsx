@@ -7,6 +7,7 @@ export const CartProvider = ({ children }) => {
     const savedCart = localStorage.getItem('cart');
     return savedCart ? JSON.parse(savedCart) : [];
   });
+  const [lastAddedItem, setLastAddedItem] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -22,6 +23,16 @@ export const CartProvider = ({ children }) => {
       }
       return [...prevItems, { ...item, quantity: 1 }];
     });
+
+    // Trigger slide notification with timestamp to ensure duplicate clicks re-trigger
+    setLastAddedItem({
+      ...item,
+      addedAt: Date.now()
+    });
+  };
+
+  const dismissNotification = () => {
+    setLastAddedItem(null);
   };
 
   const removeFromCart = (itemId) => {
@@ -61,7 +72,9 @@ export const CartProvider = ({ children }) => {
         updateQuantity,
         clearCart,
         getCartTotal,
-        getCartCount
+        getCartCount,
+        lastAddedItem,
+        dismissNotification
       }}
     >
       {children}

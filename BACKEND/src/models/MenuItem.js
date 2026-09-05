@@ -1,5 +1,32 @@
 const mongoose = require('mongoose');
 
+const reviewSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false
+  },
+  userName: {
+    type: String,
+    required: true,
+    default: 'Valued Guest'
+  },
+  rating: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5
+  },
+  comment: {
+    type: String,
+    default: ''
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 const menuItemSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -42,6 +69,17 @@ const menuItemSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  rating: {
+    type: Number,
+    default: 4.6,
+    min: 1,
+    max: 5
+  },
+  numReviews: {
+    type: Number,
+    default: 12
+  },
+  reviews: [reviewSchema],
   createdAt: {
     type: Date,
     default: Date.now

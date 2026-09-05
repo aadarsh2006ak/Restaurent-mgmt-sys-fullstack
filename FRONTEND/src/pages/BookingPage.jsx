@@ -46,7 +46,6 @@ const BookingPage = () => {
 
       if (data.success) {
         setSuccess(true);
-        // Clear fields not bound to user
         setPhone('');
         setDate('');
         setTime('');
@@ -62,36 +61,44 @@ const BookingPage = () => {
   };
 
   return (
-    <div className="fade-in" style={{ padding: '0 24px 60px', maxWidth: '650px', margin: '0 auto' }}>
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <span style={{ color: 'var(--color-gold)', fontSize: '0.85rem', letterSpacing: '4px', fontWeight: 600, textTransform: 'uppercase' }}>SECURE YOUR TABLE</span>
-        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', marginTop: '10px' }}>Make a Reservation</h1>
-        <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
+    <div className="fade-in page-wrapper" style={{ maxWidth: '650px', margin: '0 auto' }}>
+      <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+        <span style={{ color: 'var(--color-gold)', fontSize: '0.82rem', letterSpacing: '3px', fontWeight: 600, textTransform: 'uppercase' }}>
+          SECURE YOUR TABLE
+        </span>
+        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.8rem, 4.5vw, 2.5rem)', marginTop: '6px' }}>
+          Make a Reservation
+        </h1>
+        <p style={{ color: 'var(--text-muted)', marginTop: '6px', fontSize: '0.92rem' }}>
           Plan your luxury culinary journey. Reservations are highly recommended for dinner service.
         </p>
       </div>
 
       {success ? (
-        <div className="glass-panel" style={{ padding: '40px', textAlign: 'center' }}>
-          <CheckCircle size={56} style={{ color: '#2ecc71', marginBottom: '20px' }} />
-          <h2 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', marginBottom: '12px' }}>Reservation Request Received</h2>
-          <p style={{ color: 'var(--text-primary)', marginBottom: '16px' }}>
+        <div className="glass-panel" style={{ padding: 'clamp(24px, 5vw, 40px)', textAlign: 'center' }}>
+          <CheckCircle size={48} style={{ color: '#2ecc71', marginBottom: '16px' }} />
+          <h2 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.4rem', marginBottom: '10px' }}>
+            Reservation Request Received
+          </h2>
+          <p style={{ color: 'var(--text-primary)', marginBottom: '12px', fontSize: '0.95rem' }}>
             Thank you, your request has been logged successfully!
           </p>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '30px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', marginBottom: '24px' }}>
             We will contact you shortly via email or phone to confirm your table placement.
           </p>
-          <button onClick={() => setSuccess(false)} className="btn btn-primary">Book Another Table</button>
+          <button onClick={() => setSuccess(false)} className="btn btn-primary">
+            Book Another Table
+          </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '40px' }}>
+        <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: 'clamp(20px, 4.5vw, 36px)' }}>
           {error && (
-            <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '12px', borderRadius: '6px', fontSize: '0.9rem', marginBottom: '20px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
+            <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '12px', borderRadius: '6px', fontSize: '0.88rem', marginBottom: '20px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
               {error}
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div className="form-grid-2">
             <div className="form-group">
               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <User size={14} /> Full Name
@@ -121,7 +128,7 @@ const BookingPage = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div className="form-grid-2">
             <div className="form-group">
               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Phone size={14} /> Phone Number
@@ -155,7 +162,7 @@ const BookingPage = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div className="form-grid-2">
             <div className="form-group">
               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Calendar size={14} /> Date
@@ -167,7 +174,8 @@ const BookingPage = () => {
                 onChange={(e) => setDate(e.target.value)}
                 className="form-input"
                 style={{ colorScheme: 'dark' }}
-              />
+              >
+              </input>
             </div>
 
             <div className="form-group">
@@ -189,7 +197,7 @@ const BookingPage = () => {
             type="submit"
             disabled={submitting}
             className="btn btn-primary"
-            style={{ width: '100%', marginTop: '20px', padding: '14px' }}
+            style={{ width: '100%', marginTop: '12px', padding: '12px' }}
           >
             {submitting ? 'Submitting Request...' : 'Submit Reservation'}
           </button>

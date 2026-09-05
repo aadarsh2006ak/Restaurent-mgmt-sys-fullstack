@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminAuthContext } from '../context/AdminAuthContext';
-import { DollarSign, ShoppingBag, Grid, CalendarDays, Users, RefreshCw } from 'lucide-react';
+import { DollarSign, ShoppingBag, Grid, CalendarDays, RefreshCw } from 'lucide-react';
 
 const Dashboard = () => {
   const { adminToken } = useContext(AdminAuthContext);
@@ -68,17 +68,17 @@ const Dashboard = () => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', color: 'var(--color-gold)' }}>Dashboard Overview</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Real-time restaurant operational analytics and key metrics.</p>
+          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 3.5vw, 2.3rem)', color: 'var(--color-gold)' }}>Dashboard Overview</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Real-time restaurant operational analytics and key metrics.</p>
         </div>
         <button
           onClick={() => { setLoading(true); fetchDashboardData(); }}
           className="btn btn-secondary"
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '0.85rem' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 14px', fontSize: '0.82rem' }}
         >
-          <RefreshCw size={14} className={loading ? 'spin' : ''} /> Refresh Stats
+          <RefreshCw size={13} className={loading ? 'spin' : ''} /> Refresh Stats
         </button>
       </div>
 
@@ -98,85 +98,89 @@ const Dashboard = () => {
           {/* Metrics Grid */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '24px',
-            marginBottom: '40px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
+            gap: '16px',
+            marginBottom: '32px'
           }}>
             {/* Total Revenue */}
-            <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div className="glass-panel" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div style={{
                 backgroundColor: 'rgba(197, 168, 128, 0.1)',
-                padding: '16px',
-                borderRadius: '12px',
+                padding: '14px',
+                borderRadius: '10px',
                 border: '1px solid var(--border-color)',
                 display: 'flex',
-                color: 'var(--color-gold)'
+                color: 'var(--color-gold)',
+                flexShrink: 0
               }}>
-                <DollarSign size={28} />
+                <DollarSign size={24} />
               </div>
               <div>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Sales</span>
-                <h3 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '4px', color: 'var(--color-gold)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Sales</span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 'bold', marginTop: '2px', color: 'var(--color-gold)' }}>
                   ${metrics.totalSales.toFixed(2)}
                 </h3>
               </div>
             </div>
 
             {/* Active Orders */}
-            <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div className="glass-panel" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div style={{
                 backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                padding: '16px',
-                borderRadius: '12px',
+                padding: '14px',
+                borderRadius: '10px',
                 border: '1px solid rgba(52, 152, 219, 0.2)',
                 display: 'flex',
-                color: '#3498db'
+                color: '#3498db',
+                flexShrink: 0
               }}>
-                <ShoppingBag size={28} />
+                <ShoppingBag size={24} />
               </div>
               <div>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Orders</span>
-                <h3 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '4px' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Orders</span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 'bold', marginTop: '2px' }}>
                   {metrics.activeOrders}
                 </h3>
               </div>
             </div>
 
             {/* Physical Tables utilization */}
-            <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div className="glass-panel" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div style={{
                 backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                padding: '16px',
-                borderRadius: '12px',
+                padding: '14px',
+                borderRadius: '10px',
                 border: '1px solid rgba(231, 76, 60, 0.2)',
                 display: 'flex',
-                color: '#e74c3c'
+                color: '#e74c3c',
+                flexShrink: 0
               }}>
-                <Grid size={28} />
+                <Grid size={24} />
               </div>
               <div>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tables Occupied</span>
-                <h3 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '4px' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Tables Occupied</span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 'bold', marginTop: '2px' }}>
                   {metrics.occupiedTables} / {metrics.totalTables}
                 </h3>
               </div>
             </div>
 
             {/* Table booking reservations */}
-            <div className="glass-panel" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div className="glass-panel" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div style={{
                 backgroundColor: 'rgba(243, 156, 18, 0.1)',
-                padding: '16px',
-                borderRadius: '12px',
+                padding: '14px',
+                borderRadius: '10px',
                 border: '1px solid rgba(243, 156, 18, 0.2)',
                 display: 'flex',
-                color: '#f39c12'
+                color: '#f39c12',
+                flexShrink: 0
               }}>
-                <CalendarDays size={28} />
+                <CalendarDays size={24} />
               </div>
               <div>
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pending Bookings</span>
-                <h3 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginTop: '4px' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pending Bookings</span>
+                <h3 style={{ fontSize: '1.6rem', fontWeight: 'bold', marginTop: '2px' }}>
                   {metrics.pendingReservations}
                 </h3>
               </div>
@@ -184,29 +188,29 @@ const Dashboard = () => {
           </div>
 
           {/* Quick Operational advice */}
-          <div className="glass-panel" style={{ padding: '30px' }}>
-            <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.4rem', marginBottom: '16px' }}>Service Alert</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+          <div className="glass-panel" style={{ padding: 'clamp(18px, 3vw, 28px)' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.3rem', marginBottom: '14px' }}>Service Alert</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '24px' }}>
               <div>
-                <p style={{ color: 'var(--text-primary)', marginBottom: '12px', fontWeight: 600 }}>Kitchen Operations Status</p>
+                <p style={{ color: 'var(--text-primary)', marginBottom: '8px', fontWeight: 600, fontSize: '0.95rem' }}>Kitchen Operations Status</p>
                 {metrics.activeOrders > 5 ? (
-                  <p style={{ color: '#e74c3c', fontSize: '0.95rem' }}>
+                  <p style={{ color: '#e74c3c', fontSize: '0.88rem', lineHeight: '1.5' }}>
                     High service volume! The kitchen is processing {metrics.activeOrders} active orders. Prepare to support staff.
                   </p>
                 ) : (
-                  <p style={{ color: '#2ecc71', fontSize: '0.95rem' }}>
+                  <p style={{ color: '#2ecc71', fontSize: '0.88rem', lineHeight: '1.5' }}>
                     Moderate service volume. Currently processing {metrics.activeOrders} active orders. Operations running smoothly.
                   </p>
                 )}
               </div>
               <div>
-                <p style={{ color: 'var(--text-primary)', marginBottom: '12px', fontWeight: 600 }}>Dine-in Capacity Status</p>
+                <p style={{ color: 'var(--text-primary)', marginBottom: '8px', fontWeight: 600, fontSize: '0.95rem' }}>Dine-in Capacity Status</p>
                 {metrics.totalTables > 0 && (metrics.occupiedTables / metrics.totalTables) > 0.75 ? (
-                  <p style={{ color: '#e74c3c', fontSize: '0.95rem' }}>
+                  <p style={{ color: '#e74c3c', fontSize: '0.88rem', lineHeight: '1.5' }}>
                     Table availability critical! Over 75% of your tables are currently occupied ({metrics.occupiedTables} occupied). Ensure reservations are carefully monitored.
                   </p>
                 ) : (
-                  <p style={{ color: '#2ecc71', fontSize: '0.95rem' }}>
+                  <p style={{ color: '#2ecc71', fontSize: '0.88rem', lineHeight: '1.5' }}>
                     Dine-in tables are comfortably available. Current occupancy rate: {((metrics.occupiedTables / (metrics.totalTables || 1)) * 100).toFixed(0)}%.
                   </p>
                 )}
@@ -215,11 +219,6 @@ const Dashboard = () => {
           </div>
         </>
       )}
-
-      <style>{`
-        .spin { animation: spin 1.5s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
     </div>
   );
 };

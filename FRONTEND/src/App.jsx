@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
+import CartSlideNotification from './components/CartSlideNotification';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
 import CartPage from './pages/CartPage';
@@ -19,6 +20,7 @@ function App() {
         <Router>
           <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Navbar />
+            <CartSlideNotification />
             <div style={{ flex: 1, padding: '20px 0' }}>
               <Routes>
                 <Route path="/" element={<Home />} />
