@@ -40,6 +40,7 @@ const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const tableRoutes = require('./routes/tableRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 // Mount routes
 app.use('/api/auth', authRoutes);
@@ -47,6 +48,7 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/tables', tableRoutes);
 app.use('/api/reservations', reservationRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Simple Welcome Route
 app.get('/', (req, res) => {

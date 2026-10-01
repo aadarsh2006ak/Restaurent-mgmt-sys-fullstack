@@ -242,8 +242,15 @@ When running the project for the first time, you can sign in to the Admin Portal
 - `GET    /api/orders/:id` - Get order details by ID
 - `PUT    /api/orders/:id/status` - Update order status (`Pending`, `Preparing`, `Ready`, `Served`, `Cancelled`)
 - `PUT    /api/orders/:id/payment` - Update payment status (`Unpaid`, `Paid`)
-- `PUT    /api/orders/:id/pay-online` - Simulate payment gateway completion
 - `PUT    /api/orders/:id/cancel-user` - Cancel order by customer
+
+### Payment Gateway (`/api/payment`)
+- `GET    /api/payment/config` - Fetch active payment gateway configuration & public keys
+- `POST   /api/payment/razorpay/create-order` - Create Razorpay order with amount in paise
+- `POST   /api/payment/razorpay/verify` - Verify cryptographic HMAC SHA256 signature & capture payment
+- `POST   /api/payment/stripe/create-payment-intent` - Create Stripe PaymentIntent
+- `POST   /api/payment/stripe/verify` - Confirm Stripe payment intent & capture order
+- `POST   /api/payment/stripe/create-checkout-session` - Generate Stripe Hosted Checkout Session
 
 ### Tables (`/api/tables`)
 - `GET    /api/tables` - Fetch list of all tables and statuses
@@ -255,6 +262,55 @@ When running the project for the first time, you can sign in to the Admin Portal
 - `POST   /api/reservations` - Create a table reservation request
 - `GET    /api/reservations` - List all reservations *(Admin)*
 - `PUT    /api/reservations/:id` - Update reservation status (`Confirmed`, `Cancelled`, `Completed`)
+
+## 🌐 Production Deployment Guide
+
+### 1. Deploy Backend on Render (Web Service)
+1. Sign in to [Render](https://render.com) and click **"New +" ➔ "Web Service"**.
+2. Connect your GitHub repository: `Restaurent-mgmt-sys-fullstack`.
+3. Configure the settings:
+   - **Root Directory:** `BACKEND`
+   - **Environment:** `Node`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+4. Add the following **Environment Variables** in Render Dashboard:
+   - `NODE_ENV`: `production`
+   - `PORT`: `5000`
+   - `MONGO_URI`: *Your MongoDB Atlas connection URI string*
+   - `JWT_SECRET`: *A long, secure secret string*
+   - `JWT_EXPIRE`: `30d`
+   - `PAYMENT_GATEWAY`: `both` (or `razorpay` / `stripe`)
+   - `RAZORPAY_KEY_ID`: *Your Razorpay Key ID (optional if testing)*
+   - `RAZORPAY_KEY_SECRET`: *Your Razorpay Secret Key (optional)*
+   - `STRIPE_PUBLISHABLE_KEY`: *Your Stripe Publishable Key (optional)*
+   - `STRIPE_SECRET_KEY`: *Your Stripe Secret Key (optional)*
+5. Click **"Deploy Web Service"**. Once deployed, copy your Render backend URL (e.g. `https://restaurant-backend-xyz.onrender.com`).
+
+---
+
+### 2. Deploy Frontend on Netlify
+1. Sign in to [Netlify](https://www.netlify.com) and click **"Add new site" ➔ "Import an existing project"**.
+2. Connect your GitHub repository.
+3. Configure the build settings:
+   - **Base directory:** `FRONTEND`
+   - **Build command:** `npm run build`
+   - **Publish directory:** `FRONTEND/dist` (or `dist` relative to base)
+4. Under **Environment variables**, add:
+   - `VITE_API_URL`: `https://your-backend-render-app.onrender.com` (Your Render Backend URL)
+5. Click **"Deploy site"**.
+
+---
+
+### 3. Deploy Admin Portal on Netlify (Optional Separate Site)
+1. In Netlify, click **"Add new site" ➔ "Import an existing project"**.
+2. Select the same repository.
+3. Configure the build settings:
+   - **Base directory:** `ADMIN`
+   - **Build command:** `npm run build`
+   - **Publish directory:** `ADMIN/dist`
+4. Under **Environment variables**, add:
+   - `VITE_API_URL`: `https://your-backend-render-app.onrender.com`
+5. Click **"Deploy site"**.
 
 ---
 
@@ -272,3 +328,4 @@ Contributions, issues, and feature requests are welcome!
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
+

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminAuthContext } from '../context/AdminAuthContext';
+import { API_BASE_URL } from '../config/api';
 import { Trash2, Edit, Plus, Check, X, RefreshCw, Image } from 'lucide-react';
 
 const AdminMenu = () => {
@@ -27,7 +28,7 @@ const AdminMenu = () => {
 
   const fetchMenu = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/menu');
+      const response = await fetch(`${API_BASE_URL}/api/menu`);
       const data = await response.json();
       if (data.success) {
         setMenuItems(data.data);
@@ -81,7 +82,7 @@ const AdminMenu = () => {
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/menu', {
+      const response = await fetch(`${API_BASE_URL}/api/menu`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +121,7 @@ const AdminMenu = () => {
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/menu/${editingId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/${editingId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -161,7 +162,7 @@ const AdminMenu = () => {
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/menu/${itemId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/${itemId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${adminToken}`
@@ -182,7 +183,7 @@ const AdminMenu = () => {
 
   const toggleAvailabilityDirect = async (item) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/menu/${item._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/${item._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

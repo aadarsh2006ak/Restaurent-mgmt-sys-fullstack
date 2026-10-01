@@ -65,13 +65,45 @@ const orderSchema = new mongoose.Schema({
   },
   paymentStatus: {
     type: String,
-    enum: ['Unpaid', 'Paid'],
+    enum: ['Unpaid', 'Pending', 'Paid', 'Failed', 'Refunded'],
     default: 'Unpaid'
   },
   paymentMethod: {
     type: String,
-    enum: ['Cash / Counter', 'Online - Card', 'Online - UPI', 'Online - NetBanking', ''],
     default: 'Cash / Counter'
+  },
+  paymentGateway: {
+    type: String,
+    enum: ['Razorpay', 'Stripe', 'Cash', 'Mock', 'None'],
+    default: 'None'
+  },
+  razorpayOrderId: {
+    type: String,
+    default: ''
+  },
+  razorpayPaymentId: {
+    type: String,
+    default: ''
+  },
+  razorpaySignature: {
+    type: String,
+    default: ''
+  },
+  stripePaymentIntentId: {
+    type: String,
+    default: ''
+  },
+  stripeSessionId: {
+    type: String,
+    default: ''
+  },
+  paidAt: {
+    type: Date,
+    default: null
+  },
+  paymentDetails: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
   },
   transactionId: {
     type: String,

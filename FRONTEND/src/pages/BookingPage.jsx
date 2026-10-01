@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import { Calendar, Users, Clock, Phone, Mail, User, CheckCircle } from 'lucide-react';
 
 const BookingPage = () => {
@@ -28,7 +29,7 @@ const BookingPage = () => {
     setSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/reservations', {
+      const response = await fetch(`${API_BASE_URL}/api/reservations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Calendar, ShoppingBag, Eye, DollarSign, FileText, CheckCircle2, XCircle, Clock, Utensils } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 const Orders = () => {
   const { token, user } = useContext(AuthContext);
@@ -27,11 +28,11 @@ const Orders = () => {
         const headers = { Authorization: `Bearer ${token}` };
 
         // Fetch My Orders
-        const resOrders = await fetch('http://localhost:5000/api/orders/my-orders', { headers });
+        const resOrders = await fetch(`${API_BASE_URL}/api/orders/my-orders`, { headers });
         const ordersData = await resOrders.json();
 
         // Fetch Spending Stats
-        const resStats = await fetch('http://localhost:5000/api/orders/user-spending', { headers });
+        const resStats = await fetch(`${API_BASE_URL}/api/orders/user-spending`, { headers });
         const statsData = await resStats.json();
 
         if (ordersData.success) {
@@ -99,7 +100,7 @@ const Orders = () => {
           <div>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Food Spend</span>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--color-gold)', marginTop: '2px' }}>
-              ${spendingStats.totalSpent.toFixed(2)}
+              ₹{spendingStats.totalSpent.toFixed(2)}
             </h3>
           </div>
         </div>
@@ -197,7 +198,7 @@ const Orders = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto' }}>
                 <div style={{ textAlign: 'right' }}>
                   <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>Total Amount</span>
-                  <span style={{ fontWeight: 'bold', color: 'var(--color-gold)', fontSize: '1.15rem' }}>${order.totalAmount.toFixed(2)}</span>
+                  <span style={{ fontWeight: 'bold', color: 'var(--color-gold)', fontSize: '1.15rem' }}>₹{order.totalAmount.toFixed(2)}</span>
                 </div>
                 <div style={{ backgroundColor: 'rgba(255,255,255,0.02)', padding: '8px', borderRadius: '50%', border: '1px solid var(--border-color)', display: 'flex' }} className="eye-btn">
                   <Eye size={16} style={{ color: 'var(--color-gold)' }} />

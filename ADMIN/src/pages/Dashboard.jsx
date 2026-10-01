@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminAuthContext } from '../context/AdminAuthContext';
+import { API_BASE_URL } from '../config/api';
 import { DollarSign, ShoppingBag, Grid, CalendarDays, RefreshCw } from 'lucide-react';
 
 const Dashboard = () => {
@@ -18,15 +19,15 @@ const Dashboard = () => {
       const headers = { Authorization: `Bearer ${adminToken}` };
 
       // Fetch Orders
-      const resOrders = await fetch('http://localhost:5000/api/orders', { headers });
+      const resOrders = await fetch(`${API_BASE_URL}/api/orders`, { headers });
       const ordersData = await resOrders.json();
 
       // Fetch Tables
-      const resTables = await fetch('http://localhost:5000/api/tables', { headers });
+      const resTables = await fetch(`${API_BASE_URL}/api/tables`, { headers });
       const tablesData = await resTables.json();
 
       // Fetch Reservations
-      const resReservations = await fetch('http://localhost:5000/api/reservations?status=Pending', { headers });
+      const resReservations = await fetch(`${API_BASE_URL}/api/reservations?status=Pending`, { headers });
       const reservationsData = await resReservations.json();
 
       if (ordersData.success && tablesData.success && reservationsData.success) {
@@ -118,7 +119,7 @@ const Dashboard = () => {
               <div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Sales</span>
                 <h3 style={{ fontSize: '1.6rem', fontWeight: 'bold', marginTop: '2px', color: 'var(--color-gold)' }}>
-                  ${metrics.totalSales.toFixed(2)}
+                  ₹{metrics.totalSales.toFixed(2)}
                 </h3>
               </div>
             </div>

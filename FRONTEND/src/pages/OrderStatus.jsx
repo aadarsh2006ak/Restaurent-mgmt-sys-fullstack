@@ -18,6 +18,8 @@ import {
   CheckCircle2,
   AlertTriangle
 } from 'lucide-react';
+import PaymentModal from '../components/PaymentModal';
+import { API_BASE_URL } from '../config/api';
 
 const OrderStatus = () => {
   const { id } = useParams();
@@ -34,15 +36,13 @@ const OrderStatus = () => {
 
   // Online Payment Modal State
   const [showPayModal, setShowPayModal] = useState(false);
-  const [payTab, setPayTab] = useState('UPI');
-  const [paying, setPaying] = useState(false);
 
   // Invoice / Bill Modal State
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
   const fetchOrder = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${id}`);
+      const response = await fetch(`${API_BASE_URL}/api/orders/${id}`);
       const data = await response.json();
       if (data.success) {
         setOrder(data.data);
@@ -73,7 +73,7 @@ const OrderStatus = () => {
     setCancelError('');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${id}/cancel-user`, {
+      const response = await fetch(`${API_BASE_URL}/api/orders/${id}/cancel-user`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -98,34 +98,6 @@ const OrderStatus = () => {
     }
   };
 
-  const handlePayOnlineSubmit = async () => {
-    setPaying(true);
-    let selectedMethod = 'Online - UPI';
-    if (payTab === 'Card') selectedMethod = 'Online - Card';
-    if (payTab === 'NetBanking') selectedMethod = 'Online - NetBanking';
-
-    try {
-      const response = await fetch(`http://localhost:5000/api/orders/${id}/pay-online`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          paymentMethod: selectedMethod
-        })
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setOrder(data.data);
-        setShowPayModal(false);
-      }
-    } catch (err) {
-      console.error('Payment error', err);
-    } finally {
-      setPaying(false);
-    }
-  };
 
   const handlePrintInvoice = () => {
     window.print();
@@ -283,9 +255,9 @@ const OrderStatus = () => {
                 <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
                   <div>
                     <h4 style={{ fontWeight: 600, fontSize: '0.95rem' }}>{item.menuItem?.name || 'Dish Item'}</h4>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Qty: {item.quantity} × ${item.price.toFixed(2)}</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Qty: {item.quantity} × ₹{item.price.toFixed(2)}</span>
                   </div>
-                  <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>${(item.quantity * item.price).toFixed(2)}</span>
+                  <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>₹{(item.quantity * item.price).toFixed(2)}</span>
                 </div>
               ))}
             </div>
@@ -324,17 +296,17 @@ const OrderStatus = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.88rem', color: 'var(--text-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Subtotal:</span>
-                <span>${(order.subtotalAmount || (order.totalAmount / 1.05)).toFixed(2)}</span>
+                <span>₹{(order.subtotalAmount || (order.totalAmount / 1.05)).toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>GST / Tax (5%):</span>
-                <span>${(order.taxAmount || (order.totalAmount - (order.totalAmount / 1.05))).toFixed(2)}</span>
+                <span>₹{(order.taxAmount || (order.totalAmount - (order.totalAmount / 1.05))).toFixed(2)}</span>
               </div>
             </div>
 
             <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '1.05rem', fontWeight: 600 }}>Total Amount:</span>
-              <span style={{ color: 'var(--color-gold)', fontSize: '1.35rem', fontWeight: 'bold' }}>${order.totalAmount.toFixed(2)}</span>
+              <span style={{ color: 'var(--color-gold)', fontSize: '1.35rem', fontWeight: 'bold' }}>₹{order.totalAmount.toFixed(2)}</span>
             </div>
 
             {/* Pay Online Button if Unpaid */}
@@ -344,7 +316,7 @@ const OrderStatus = () => {
                 className="btn btn-primary"
                 style={{ width: '100%', gap: '6px', padding: '11px', fontSize: '0.9rem' }}
               >
-                <CreditCard size={16} /> Pay Online Now (${order.totalAmount.toFixed(2)})
+                <CreditCard size={16} /> Pay Online Now (₹{order.totalAmount.toFixed(2)})
               </button>
             )}
 
@@ -489,118 +461,20 @@ const OrderStatus = () => {
       )}
 
       {/* Online Payment Modal */}
-      {showPayModal && (
-        <div
-          className="payment-modal-overlay"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(8px)',
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '16px'
-          }}
-          onClick={() => setShowPayModal(false)}
-        >
-          <div
-            className="glass-panel fade-in"
-            style={{
-              maxWidth: '460px',
-              width: '100%',
-              padding: '26px',
-              borderRadius: '16px',
-              border: '1px solid var(--color-gold)',
-              backgroundColor: 'rgba(18, 22, 30, 0.98)',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.8)'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ShieldCheck size={22} style={{ color: 'var(--color-gold)' }} />
-                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem' }}>Pay Online</h3>
-              </div>
-              <button onClick={() => setShowPayModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                <X size={20} />
-              </button>
-            </div>
-
-            <div style={{ backgroundColor: 'rgba(197, 168, 128, 0.1)', borderRadius: '10px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>Bill Amount:</span>
-              <span style={{ fontSize: '1.3rem', fontWeight: 'bold', color: 'var(--color-gold)' }}>${order.totalAmount.toFixed(2)}</span>
-            </div>
-
-            {/* Payment Tabs */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '16px' }}>
-              <button
-                type="button"
-                onClick={() => setPayTab('UPI')}
-                className={`btn ${payTab === 'UPI' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ padding: '8px 4px', fontSize: '0.78rem', gap: '4px' }}
-              >
-                <QrCode size={14} /> UPI
-              </button>
-              <button
-                type="button"
-                onClick={() => setPayTab('Card')}
-                className={`btn ${payTab === 'Card' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ padding: '8px 4px', fontSize: '0.78rem', gap: '4px' }}
-              >
-                <CreditCard size={14} /> Card
-              </button>
-              <button
-                type="button"
-                onClick={() => setPayTab('NetBanking')}
-                className={`btn ${payTab === 'NetBanking' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ padding: '8px 4px', fontSize: '0.78rem', gap: '4px' }}
-              >
-                <Building size={14} /> NetBank
-              </button>
-            </div>
-
-            {payTab === 'UPI' && (
-              <div style={{ textAlign: 'center', padding: '10px 0' }}>
-                <div style={{ backgroundColor: '#fff', padding: '10px', borderRadius: '10px', display: 'inline-block', marginBottom: '10px' }}>
-                  <div style={{ width: '110px', height: '110px', border: '2px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0' }}>
-                    <span style={{ fontWeight: 'bold', color: '#000', fontSize: '0.75rem' }}>SCAN & PAY</span>
-                  </div>
-                </div>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>UPI ID: restaurant@aura / Scan QR</p>
-              </div>
-            )}
-
-            {payTab === 'Card' && (
-              <div className="form-group">
-                <label className="form-label" htmlFor="card-sim">Card Number</label>
-                <input id="card-sim" type="text" placeholder="4532 •••• •••• 1290" className="form-input" />
-              </div>
-            )}
-
-            {payTab === 'NetBanking' && (
-              <div className="form-group">
-                <label className="form-label" htmlFor="bank-sim">Bank</label>
-                <select id="bank-sim" className="form-input" style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
-                  <option>HDFC Bank</option>
-                  <option>State Bank of India</option>
-                  <option>ICICI Bank</option>
-                </select>
-              </div>
-            )}
-
-            <button
-              onClick={handlePayOnlineSubmit}
-              disabled={paying}
-              className="btn btn-primary"
-              style={{ width: '100%', marginTop: '16px', padding: '12px', gap: '8px' }}
-            >
-              {paying ? 'Processing Payment...' : <><CheckCircle2 size={16} /> Complete ${order.totalAmount.toFixed(2)} Payment</>}
-            </button>
-          </div>
-        </div>
-      )}
+      <PaymentModal
+        isOpen={showPayModal}
+        onClose={() => setShowPayModal(false)}
+        order={order}
+        onPaymentSuccess={(updatedOrder) => {
+          setOrder(updatedOrder);
+          setShowPayModal(false);
+        }}
+        customerInfo={{
+          name: order.user?.name || order.guestName,
+          email: order.user?.email,
+          phone: order.user?.phone
+        }}
+      />
 
       {/* Bill / Tax Invoice Modal */}
       {showInvoiceModal && (
@@ -752,8 +626,8 @@ const OrderStatus = () => {
                     <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--color-gold)', width: '8%' }}>#</th>
                     <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--color-gold)', width: '50%' }}>Item Description</th>
                     <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--color-gold)', width: '12%' }}>Qty</th>
-                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Rate ($)</th>
-                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Amount ($)</th>
+                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Rate (₹)</th>
+                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Amount (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -767,8 +641,8 @@ const OrderStatus = () => {
                         )}
                       </td>
                       <td style={{ textAlign: 'center', padding: '6px 4px', fontWeight: 600 }}>{it.quantity}</td>
-                      <td style={{ textAlign: 'right', padding: '6px 6px' }}>${it.price?.toFixed(2)}</td>
-                      <td style={{ textAlign: 'right', padding: '6px 6px', fontWeight: 600 }}>${(it.quantity * it.price).toFixed(2)}</td>
+                      <td style={{ textAlign: 'right', padding: '6px 6px' }}>₹{it.price?.toFixed(2)}</td>
+                      <td style={{ textAlign: 'right', padding: '6px 6px', fontWeight: 600 }}>₹{(it.quantity * it.price).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -795,15 +669,15 @@ const OrderStatus = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.82rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                     <span>Food Subtotal:</span>
-                    <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>${(order.subtotalAmount || (order.totalAmount / 1.05)).toFixed(2)}</span>
+                    <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>₹{(order.subtotalAmount || (order.totalAmount / 1.05)).toFixed(2)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                     <span>CGST (2.5%):</span>
-                    <span style={{ color: 'var(--text-primary)' }}>${((order.taxAmount || (order.totalAmount - (order.totalAmount / 1.05))) / 2).toFixed(2)}</span>
+                    <span style={{ color: 'var(--text-primary)' }}>₹{((order.taxAmount || (order.totalAmount - (order.totalAmount / 1.05))) / 2).toFixed(2)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                     <span>SGST (2.5%):</span>
-                    <span style={{ color: 'var(--text-primary)' }}>${((order.taxAmount || (order.totalAmount - (order.totalAmount / 1.05))) / 2).toFixed(2)}</span>
+                    <span style={{ color: 'var(--text-primary)' }}>₹{((order.taxAmount || (order.totalAmount - (order.totalAmount / 1.05))) / 2).toFixed(2)}</span>
                   </div>
                   <div style={{
                     display: 'flex',
@@ -815,7 +689,7 @@ const OrderStatus = () => {
                     marginTop: '2px'
                   }}>
                     <span>Grand Total:</span>
-                    <span style={{ color: 'var(--color-gold)' }}>${order.totalAmount.toFixed(2)}</span>
+                    <span style={{ color: 'var(--color-gold)' }}>₹{order.totalAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

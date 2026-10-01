@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 import { ShoppingCart, Check, Search, Sparkles, Star, MessageSquare, X } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 const Menu = () => {
   const [items, setItems] = useState([]);
@@ -34,7 +35,7 @@ const Menu = () => {
 
   const fetchMenu = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/menu');
+      const response = await fetch(`${API_BASE_URL}/api/menu`);
       const data = await response.json();
       if (data.success) {
         setItems(data.data);
@@ -77,7 +78,7 @@ const Menu = () => {
     setRatingSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/menu/${ratingModalItem._id}/rate`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/${ratingModalItem._id}/rate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

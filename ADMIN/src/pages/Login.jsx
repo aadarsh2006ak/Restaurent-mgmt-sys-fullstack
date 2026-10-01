@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminAuthContext } from '../context/AdminAuthContext';
+import { API_BASE_URL } from '../config/api';
 import { Lock, Mail, ArrowRight, Key } from 'lucide-react';
 
 const Login = () => {
@@ -32,7 +33,7 @@ const Login = () => {
     setSeeding(true);
     setSeedMessage('');
     try {
-      const response = await fetch('http://localhost:5000/api/auth/seed-admin', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/seed-admin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

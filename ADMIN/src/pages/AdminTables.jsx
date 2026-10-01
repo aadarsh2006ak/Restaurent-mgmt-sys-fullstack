@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminAuthContext } from '../context/AdminAuthContext';
+import { API_BASE_URL } from '../config/api';
 import { Plus, Trash2, RefreshCw, Grid } from 'lucide-react';
 
 const AdminTables = () => {
@@ -16,7 +17,7 @@ const AdminTables = () => {
 
   const fetchTables = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/tables');
+      const response = await fetch(`${API_BASE_URL}/api/tables`);
       const data = await response.json();
       if (data.success) {
         setTables(data.data);
@@ -38,7 +39,7 @@ const AdminTables = () => {
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/tables', {
+      const response = await fetch(`${API_BASE_URL}/api/tables`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +74,7 @@ const AdminTables = () => {
     const nextStatus = statuses[nextIdx];
 
     try {
-      const response = await fetch(`http://localhost:5000/api/tables/${tableId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/tables/${tableId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +100,7 @@ const AdminTables = () => {
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/tables/${tableId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/tables/${tableId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${adminToken}`

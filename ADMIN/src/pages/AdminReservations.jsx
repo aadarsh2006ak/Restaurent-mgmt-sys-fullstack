@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminAuthContext } from '../context/AdminAuthContext';
+import { API_BASE_URL } from '../config/api';
 import { Calendar, Check, X, RefreshCw } from 'lucide-react';
 
 const AdminReservations = () => {
@@ -16,10 +17,10 @@ const AdminReservations = () => {
     try {
       const headers = { Authorization: `Bearer ${adminToken}` };
       
-      const resReservations = await fetch('http://localhost:5000/api/reservations', { headers });
+      const resReservations = await fetch(`${API_BASE_URL}/api/reservations`, { headers });
       const reservationsData = await resReservations.json();
 
-      const resTables = await fetch('http://localhost:5000/api/tables', { headers });
+      const resTables = await fetch(`${API_BASE_URL}/api/tables`, { headers });
       const tablesData = await resTables.json();
 
       if (reservationsData.success && tablesData.success) {
@@ -42,7 +43,7 @@ const AdminReservations = () => {
     const tableNumber = assignedTables[resId] || '';
 
     try {
-      const response = await fetch(`http://localhost:5000/api/reservations/${resId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/reservations/${resId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

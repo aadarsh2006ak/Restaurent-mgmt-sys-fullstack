@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminAuthContext } from '../context/AdminAuthContext';
+import { API_BASE_URL } from '../config/api';
 import { RefreshCw, Clipboard, CreditCard, Clock, FileText, Printer, X } from 'lucide-react';
 
 const AdminOrders = () => {
@@ -15,7 +16,7 @@ const AdminOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const response = await fetch(`${API_BASE_URL}/api/orders`, {
         headers: {
           Authorization: `Bearer ${adminToken}`
         }
@@ -40,7 +41,7 @@ const AdminOrders = () => {
   const updateStatus = async (orderId, newStatus) => {
     setUpdatingId(orderId);
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ const AdminOrders = () => {
   const updatePayment = async (orderId, newPaymentStatus) => {
     setUpdatingId(orderId);
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/payment`, {
+      const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/payment`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ const AdminOrders = () => {
   const handleGenerateInvoice = async (order) => {
     setGeneratingInvoice(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${order._id}/generate-invoice`, {
+      const response = await fetch(`${API_BASE_URL}/api/orders/${order._id}/generate-invoice`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${adminToken}`
@@ -191,6 +192,11 @@ const AdminOrders = () => {
                     <span style={{ fontSize: '1.05rem', fontWeight: 'bold' }}>Order #{order._id.substring(18)}</span>
                     <span className={`badge badge-${order.status.toLowerCase()}`}>{order.status}</span>
                     <span className={`badge badge-${order.paymentStatus.toLowerCase()}`}>{order.paymentStatus}</span>
+                    {order.paymentGateway && order.paymentGateway !== 'None' && (
+                      <span style={{ fontSize: '0.72rem', backgroundColor: 'rgba(52, 152, 219, 0.15)', color: '#3498db', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(52, 152, 219, 0.3)', fontWeight: 600 }}>
+                        {order.paymentGateway}
+                      </span>
+                    )}
                     {order.invoiceNumber && (
                       <span style={{ fontSize: '0.72rem', backgroundColor: 'rgba(197, 168, 128, 0.12)', color: 'var(--color-gold)', padding: '2px 8px', borderRadius: '4px', border: '1px solid var(--border-color)', fontWeight: 600 }}>
                         {order.invoiceNumber}
@@ -207,6 +213,11 @@ const AdminOrders = () => {
                     <span>
                       Payment: <strong>{order.paymentMethod || 'Cash'}</strong>
                     </span>
+                    {order.transactionId && (
+                      <span>
+                        Txn ID: <strong style={{ color: 'var(--color-gold)' }}>{order.transactionId}</strong>
+                      </span>
+                    )}
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <Clock size={12} /> {new Date(order.createdAt).toLocaleTimeString()}
                     </span>
@@ -222,7 +233,7 @@ const AdminOrders = () => {
                 
                 <div style={{ textAlign: 'right', marginLeft: 'auto' }}>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Total Bill</span>
-                  <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--color-gold)' }}>${order.totalAmount.toFixed(2)}</span>
+                  <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--color-gold)' }}>₹{order.totalAmount.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -234,7 +245,7 @@ const AdminOrders = () => {
                     <div key={idx} style={{ padding: '8px 10px', background: 'rgba(255,255,255,0.02)', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '0.86rem' }}>
                       <strong>{item.quantity}×</strong> {item.menuItem?.name || 'Deleted Item'}
                       <span style={{ display: 'block', fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                        Category: {item.menuItem?.category || 'N/A'} • ${item.price?.toFixed(2)}
+                        Category: {item.menuItem?.category || 'N/A'} • ₹{item.price?.toFixed(2)}
                       </span>
                     </div>
                   ))}
@@ -478,8 +489,8 @@ const AdminOrders = () => {
                     <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--color-gold)', width: '8%' }}>#</th>
                     <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--color-gold)', width: '50%' }}>Item Description</th>
                     <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--color-gold)', width: '12%' }}>Qty</th>
-                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Rate ($)</th>
-                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Amount ($)</th>
+                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Rate (₹)</th>
+                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Amount (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -493,8 +504,8 @@ const AdminOrders = () => {
                         )}
                       </td>
                       <td style={{ textAlign: 'center', padding: '6px 4px', fontWeight: 600 }}>{it.quantity}</td>
-                      <td style={{ textAlign: 'right', padding: '6px 6px' }}>${it.price?.toFixed(2)}</td>
-                      <td style={{ textAlign: 'right', padding: '6px 6px', fontWeight: 600 }}>${(it.quantity * it.price).toFixed(2)}</td>
+                      <td style={{ textAlign: 'right', padding: '6px 6px' }}>₹{it.price?.toFixed(2)}</td>
+                      <td style={{ textAlign: 'right', padding: '6px 6px', fontWeight: 600 }}>₹{(it.quantity * it.price).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -521,15 +532,15 @@ const AdminOrders = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.82rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                     <span>Food Subtotal:</span>
-                    <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>${(invoiceOrder.subtotalAmount || (invoiceOrder.totalAmount / 1.05)).toFixed(2)}</span>
+                    <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>₹{(invoiceOrder.subtotalAmount || (invoiceOrder.totalAmount / 1.05)).toFixed(2)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                     <span>CGST (2.5%):</span>
-                    <span style={{ color: 'var(--text-primary)' }}>${((invoiceOrder.taxAmount || (invoiceOrder.totalAmount - (invoiceOrder.totalAmount / 1.05))) / 2).toFixed(2)}</span>
+                    <span style={{ color: 'var(--text-primary)' }}>₹{((invoiceOrder.taxAmount || (invoiceOrder.totalAmount - (invoiceOrder.totalAmount / 1.05))) / 2).toFixed(2)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                     <span>SGST (2.5%):</span>
-                    <span style={{ color: 'var(--text-primary)' }}>${((invoiceOrder.taxAmount || (invoiceOrder.totalAmount - (invoiceOrder.totalAmount / 1.05))) / 2).toFixed(2)}</span>
+                    <span style={{ color: 'var(--text-primary)' }}>₹{((invoiceOrder.taxAmount || (invoiceOrder.totalAmount - (invoiceOrder.totalAmount / 1.05))) / 2).toFixed(2)}</span>
                   </div>
                   <div style={{
                     display: 'flex',
@@ -541,7 +552,7 @@ const AdminOrders = () => {
                     marginTop: '2px'
                   }}>
                     <span>Grand Total:</span>
-                    <span style={{ color: 'var(--color-gold)' }}>${invoiceOrder.totalAmount.toFixed(2)}</span>
+                    <span style={{ color: 'var(--color-gold)' }}>₹{invoiceOrder.totalAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
