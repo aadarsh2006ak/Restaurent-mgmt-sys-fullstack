@@ -9,14 +9,14 @@ import {
   CheckCircle,
   XCircle,
   CreditCard,
-  QrCode,
   Building,
   FileText,
   Printer,
   X,
   ShieldCheck,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  Utensils
 } from 'lucide-react';
 import PaymentModal from '../components/PaymentModal';
 import { API_BASE_URL } from '../config/api';
@@ -98,7 +98,6 @@ const OrderStatus = () => {
     }
   };
 
-
   const handlePrintInvoice = () => {
     window.print();
   };
@@ -113,10 +112,12 @@ const OrderStatus = () => {
 
   if (error || !order) {
     return (
-      <div className="fade-in page-wrapper" style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-        <h2 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', marginBottom: '16px' }}>Oops!</h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>{error || 'We could not load your order details.'}</p>
-        <Link to="/menu" className="btn btn-primary">Go back to Menu</Link>
+      <div className="fade-in page-wrapper" style={{ maxWidth: '600px', margin: '40px auto', textAlign: 'center' }}>
+        <div className="glass-panel" style={{ padding: '36px 20px', borderRadius: '18px' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', marginBottom: '12px' }}>Order Not Found</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '0.9rem' }}>{error || 'We could not load your order details.'}</p>
+          <Link to="/menu" className="btn btn-primary">Go back to Menu</Link>
+        </div>
       </div>
     );
   }
@@ -127,26 +128,28 @@ const OrderStatus = () => {
   const canCancel = ['Pending', 'Preparing'].includes(order.status);
 
   return (
-    <div className="fade-in page-wrapper" style={{ maxWidth: '850px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-        <Link to="/menu" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.88rem', color: 'var(--color-gold)' }}>
+    <div className="fade-in page-wrapper" style={{ maxWidth: '880px', margin: '0 auto' }}>
+      {/* Top Header Row */}
+      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+        <Link to="/menu" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: 'var(--color-gold)', fontWeight: 600 }}>
           <ChevronLeft size={16} /> Back to Menu
         </Link>
-        <Link to="/orders" style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+        <Link to="/orders" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
           View All Orders
         </Link>
       </div>
 
-      <div className="order-status-layout" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '24px' }}>
+      <div className="order-status-responsive-grid">
+        {/* Left Column: Live Stepper & Items */}
         <div>
           {/* Order Status Tracking Box */}
-          <div className="glass-panel" style={{ padding: 'clamp(18px, 4vw, 30px)', marginBottom: '24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: '8px' }}>
+          <div className="glass-panel" style={{ padding: 'clamp(18px, 4vw, 28px)', marginBottom: '20px', borderRadius: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px', flexWrap: 'wrap', gap: '8px' }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ORDER ID: #{order._id.substring(18)}</span>
-                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.4rem, 3vw, 1.8rem)', marginTop: '2px' }}>Track Your Order</h2>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>ORDER ID: #{order._id.substring(18)}</span>
+                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.4rem, 3.5vw, 1.8rem)', marginTop: '2px' }}>Track Order</h2>
               </div>
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <span className={`badge badge-${order.status.toLowerCase()}`}>
                   {order.status}
                 </span>
@@ -158,62 +161,31 @@ const OrderStatus = () => {
 
             {/* Stepper Timeline */}
             {order.status !== 'Cancelled' ? (
-              <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative', margin: '36px 0 20px' }}>
-                {/* Connector line */}
-                <div style={{
-                  position: 'absolute',
-                  top: '18px',
-                  left: '20px',
-                  right: '20px',
-                  height: '2px',
-                  backgroundColor: 'rgba(255,255,255,0.08)',
-                  zIndex: 1
-                }} />
-                {/* Active connector fill */}
-                <div style={{
-                  position: 'absolute',
-                  top: '18px',
-                  left: '20px',
-                  width: `${Math.max(0, (currentStepIndex / 3) * 88)}%`,
-                  height: '2px',
-                  backgroundColor: 'var(--color-gold)',
-                  zIndex: 2,
-                  transition: 'width 0.5s ease'
-                }} />
+              <div className="order-stepper-container">
+                {/* Background Track */}
+                <div className="stepper-track-bg" />
+                
+                {/* Active Progress Fill */}
+                <div
+                  className="stepper-track-fill"
+                  style={{
+                    width: `${Math.max(0, (currentStepIndex / 3) * 82)}%`
+                  }}
+                />
 
                 {statusSteps.map((step, idx) => {
                   const isActive = idx <= currentStepIndex;
                   const isCurrent = idx === currentStepIndex;
 
                   return (
-                    <div key={step} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 3, position: 'relative', width: '25%' }}>
-                      <div className="stepper-circle" style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '50%',
-                        backgroundColor: isCurrent ? 'var(--color-gold)' : isActive ? '#1f2833' : '#0b0c10',
-                        border: `2px solid ${isActive ? 'var(--color-gold)' : 'var(--border-color)'}`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: isCurrent ? 'var(--bg-primary)' : isActive ? 'var(--color-gold)' : 'var(--text-muted)',
-                        transition: 'var(--transition-smooth)'
-                      }}>
-                        {idx === 0 && <Clock size={15} />}
-                        {idx === 1 && <Coffee size={15} />}
-                        {idx === 2 && <MapPin size={15} />}
-                        {idx === 3 && <CheckCircle size={15} />}
+                    <div key={step} className="stepper-step-item">
+                      <div className={`stepper-node-circle ${isCurrent ? 'current' : isActive ? 'active' : 'inactive'}`}>
+                        {idx === 0 && <Clock size={14} />}
+                        {idx === 1 && <Coffee size={14} />}
+                        {idx === 2 && <MapPin size={14} />}
+                        {idx === 3 && <CheckCircle size={14} />}
                       </div>
-                      <span style={{
-                        fontSize: '0.72rem',
-                        fontWeight: isActive ? 600 : 500,
-                        color: isActive ? 'var(--color-gold)' : 'var(--text-muted)',
-                        marginTop: '8px',
-                        textAlign: 'center',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.4px',
-                        wordBreak: 'break-word'
-                      }}>
+                      <span className={`stepper-step-label ${isActive ? 'active' : 'inactive'}`}>
                         {step}
                       </span>
                     </div>
@@ -221,11 +193,11 @@ const OrderStatus = () => {
                 })}
               </div>
             ) : (
-              <div style={{ padding: '16px', borderRadius: '10px', border: '1px solid rgba(231,76,60,0.3)', backgroundColor: 'rgba(231,76,60,0.08)', color: '#e74c3c', marginTop: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}>
+              <div style={{ padding: '14px', borderRadius: '10px', border: '1px solid rgba(231,76,60,0.3)', backgroundColor: 'rgba(231,76,60,0.08)', color: '#e74c3c', marginTop: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '0.95rem' }}>
                   <XCircle size={18} /> Order Cancelled
                 </div>
-                <p style={{ fontSize: '0.86rem', marginTop: '6px', color: '#f5f5f7' }}>
+                <p style={{ fontSize: '0.84rem', marginTop: '4px', color: '#f5f5f7' }}>
                   <strong>Reason:</strong> {order.cancellationReason || 'Cancelled upon request.'}
                 </p>
               </div>
@@ -233,11 +205,11 @@ const OrderStatus = () => {
 
             {/* Cancel Button if eligible */}
             {canCancel && (
-              <div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+              <div style={{ marginTop: '18px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '14px', display: 'flex', justifyContent: 'flex-end' }}>
                 <button
                   onClick={() => setShowCancelModal(true)}
                   className="btn btn-danger btn-sm"
-                  style={{ gap: '6px', padding: '8px 16px' }}
+                  style={{ gap: '6px' }}
                 >
                   <XCircle size={14} /> Cancel Order
                 </button>
@@ -245,220 +217,111 @@ const OrderStatus = () => {
             )}
           </div>
 
-          {/* Items Summary */}
-          <div className="glass-panel" style={{ padding: 'clamp(18px, 4vw, 24px)' }}>
-            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--color-gold)', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
-              Items Summary
+          {/* Items Summary Card */}
+          <div className="glass-panel" style={{ padding: 'clamp(16px, 3.5vw, 24px)', borderRadius: '16px' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: 'var(--color-gold)', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
+              Ordered Items ({order.items.reduce((acc, i) => acc + i.quantity, 0)})
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {order.items.map((item, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '8px 0',
+                    borderBottom: idx !== order.items.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none'
+                  }}
+                >
                   <div>
-                    <h4 style={{ fontWeight: 600, fontSize: '0.95rem' }}>{item.menuItem?.name || 'Dish Item'}</h4>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Qty: {item.quantity} × ₹{item.price.toFixed(2)}</span>
+                    <div style={{ fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-primary)' }}>
+                      <span style={{ color: 'var(--color-gold)', marginRight: '6px' }}>{item.quantity}×</span>
+                      {item.menuItem?.name || 'Dish Item'}
+                    </div>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      ₹{(item.price || 0).toFixed(2)} each
+                    </span>
                   </div>
-                  <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>₹{(item.quantity * item.price).toFixed(2)}</span>
+                  <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                    ₹{((item.price || 0) * item.quantity).toFixed(2)}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Billing Details Panel */}
+        {/* Right Column: Order Summary, Invoicing & Actions */}
         <div>
-          <div className="glass-panel" style={{ padding: 'clamp(18px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--color-gold)', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
-              Billing Details
+          <div className="glass-panel" style={{ padding: '20px', borderRadius: '16px' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--color-gold)', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
+              Order Details
             </h3>
 
-            <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Dining Mode</span>
-              <p style={{ fontWeight: 600, fontSize: '0.98rem', marginTop: '2px' }}>
-                {order.orderType} {order.tableNumber && `(Table ${order.tableNumber})`}
-              </p>
-            </div>
-
-            <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Placed By</span>
-              <p style={{ fontWeight: 600, fontSize: '0.98rem', marginTop: '2px' }}>
-                {order.user?.name || order.guestName || 'Walk-in Guest'}
-              </p>
-            </div>
-
-            <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Payment Mode</span>
-              <p style={{ fontWeight: 600, fontSize: '0.92rem', marginTop: '2px' }}>
-                {order.paymentMethod || 'Cash / Counter'} {order.transactionId && `(${order.transactionId})`}
-              </p>
-            </div>
-
-            {/* Price breakdown */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.88rem', color: 'var(--text-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.86rem', color: 'var(--text-muted)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>Subtotal:</span>
-                <span>₹{(order.subtotalAmount || (order.totalAmount / 1.05)).toFixed(2)}</span>
+                <span>Dining Type:</span>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{order.orderType}</span>
+              </div>
+              {order.tableNumber && (
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Table Number:</span>
+                  <span style={{ color: 'var(--color-gold)', fontWeight: 700 }}>Table {order.tableNumber}</span>
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Order Time:</span>
+                <span style={{ color: 'var(--text-primary)' }}>{new Date(order.createdAt).toLocaleTimeString()}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>GST / Tax (5%):</span>
-                <span>₹{(order.taxAmount || (order.totalAmount - (order.totalAmount / 1.05))).toFixed(2)}</span>
+                <span>Payment Mode:</span>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{order.paymentMethod || 'Cash'}</span>
+              </div>
+
+              {/* Price Breakdown */}
+              <div style={{ borderTop: '1px dashed rgba(255,255,255,0.08)', paddingTop: '10px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Subtotal:</span>
+                  <span>₹{(order.subtotalAmount || (order.totalAmount / 1.05)).toFixed(2)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>GST & Tax (5%):</span>
+                  <span>₹{(order.taxAmount || (order.totalAmount - (order.totalAmount / 1.05))).toFixed(2)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.15rem', fontWeight: 'bold', borderTop: '1px solid var(--border-color)', paddingTop: '8px', color: 'var(--color-gold)' }}>
+                  <span>Grand Total:</span>
+                  <span>₹{order.totalAmount.toFixed(2)}</span>
+                </div>
               </div>
             </div>
 
-            <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '1.05rem', fontWeight: 600 }}>Total Amount:</span>
-              <span style={{ color: 'var(--color-gold)', fontSize: '1.35rem', fontWeight: 'bold' }}>₹{order.totalAmount.toFixed(2)}</span>
-            </div>
+            {/* Quick Action Buttons */}
+            <div style={{ marginTop: '18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {/* Pay Now Button if Unpaid */}
+              {order.paymentStatus === 'Unpaid' && order.status !== 'Cancelled' && (
+                <button
+                  onClick={() => setShowPayModal(true)}
+                  className="btn btn-primary"
+                  style={{ width: '100%', gap: '6px', padding: '11px', fontSize: '0.88rem' }}
+                >
+                  <CreditCard size={15} /> Pay Bill Online (₹{order.totalAmount.toFixed(2)})
+                </button>
+              )}
 
-            {/* Pay Online Button if Unpaid */}
-            {order.paymentStatus === 'Unpaid' && order.status !== 'Cancelled' && (
+              {/* Tax Invoice / Receipt Button */}
               <button
-                onClick={() => setShowPayModal(true)}
-                className="btn btn-primary"
-                style={{ width: '100%', gap: '6px', padding: '11px', fontSize: '0.9rem' }}
+                onClick={() => setShowInvoiceModal(true)}
+                className="btn btn-secondary"
+                style={{ width: '100%', gap: '6px', padding: '10px', fontSize: '0.84rem' }}
               >
-                <CreditCard size={16} /> Pay Online Now (₹{order.totalAmount.toFixed(2)})
+                <FileText size={15} /> View Tax Invoice / Bill
               </button>
-            )}
-
-            {/* View Invoice / Bill Button */}
-            <button
-              onClick={() => setShowInvoiceModal(true)}
-              className="btn btn-secondary"
-              style={{ width: '100%', gap: '6px', padding: '10px', fontSize: '0.85rem' }}
-            >
-              <FileText size={15} /> View Full Bill / Tax Invoice
-            </button>
-
-            <div style={{ textAlign: 'center', fontSize: '0.78rem', color: 'var(--text-muted)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '10px' }}>
-              Live real-time operational status updates automatically.
             </div>
           </div>
         </div>
       </div>
-
-      {/* User Cancellation Modal */}
-      {showCancelModal && (
-        <div
-          className="cancel-modal-overlay"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(8px)',
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '16px'
-          }}
-          onClick={() => setShowCancelModal(false)}
-        >
-          <div
-            className="glass-panel fade-in"
-            style={{
-              maxWidth: '460px',
-              width: '100%',
-              padding: '26px',
-              borderRadius: '16px',
-              border: '1px solid #e74c3c',
-              backgroundColor: 'rgba(20, 24, 32, 0.98)',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.8)'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#e74c3c' }}>
-                <AlertTriangle size={22} />
-                <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', color: '#f5f5f7' }}>Cancel Food Order</h3>
-              </div>
-              <button onClick={() => setShowCancelModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                <X size={20} />
-              </button>
-            </div>
-
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '18px' }}>
-              Please select the reason for cancelling your order. Your reserved table will also be released.
-            </p>
-
-            {cancelError && (
-              <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '10px', borderRadius: '6px', fontSize: '0.85rem', marginBottom: '16px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
-                {cancelError}
-              </div>
-            )}
-
-            <form onSubmit={handleCancelSubmit}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '18px' }}>
-                {[
-                  'Placed order by mistake',
-                  'Want to change items or quantities',
-                  'Wait time is taking too long',
-                  'Changed dining preference / plans',
-                  'Other reason'
-                ].map((reasonOption) => (
-                  <label
-                    key={reasonOption}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      backgroundColor: cancelReason === reasonOption ? 'rgba(231, 76, 60, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                      border: cancelReason === reasonOption ? '1px solid #e74c3c' : '1px solid var(--border-color)',
-                      cursor: 'pointer',
-                      fontSize: '0.88rem'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="cancelReason"
-                      value={reasonOption}
-                      checked={cancelReason === reasonOption}
-                      onChange={(e) => setCancelReason(e.target.value)}
-                      style={{ accentColor: '#e74c3c' }}
-                    />
-                    <span>{reasonOption}</span>
-                  </label>
-                ))}
-              </div>
-
-              {cancelReason === 'Other reason' && (
-                <div className="form-group">
-                  <label className="form-label" htmlFor="cancel-note">Additional Note (Optional)</label>
-                  <textarea
-                    id="cancel-note"
-                    rows={2}
-                    placeholder="Tell us what happened..."
-                    value={cancelNote}
-                    onChange={(e) => setCancelNote(e.target.value)}
-                    className="form-input"
-                    style={{ resize: 'none' }}
-                  />
-                </div>
-              )}
-
-              <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-                <button
-                  type="button"
-                  onClick={() => setShowCancelModal(false)}
-                  className="btn btn-secondary"
-                  style={{ flex: 1, padding: '10px' }}
-                >
-                  Keep Order
-                </button>
-                <button
-                  type="submit"
-                  disabled={cancelling}
-                  className="btn btn-danger"
-                  style={{ flex: 1, padding: '10px' }}
-                >
-                  {cancelling ? 'Cancelling...' : 'Confirm Cancel'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Online Payment Modal */}
       <PaymentModal
@@ -470,39 +333,105 @@ const OrderStatus = () => {
           setShowPayModal(false);
         }}
         customerInfo={{
-          name: order.user?.name || order.guestName,
-          email: order.user?.email,
-          phone: order.user?.phone
+          name: order.guestName || 'Valued Guest'
         }}
       />
 
-      {/* Bill / Tax Invoice Modal */}
+      {/* Cancel Order Modal */}
+      {showCancelModal && (
+        <div
+          className="order-modal-backdrop fade-in"
+          onClick={() => setShowCancelModal(false)}
+        >
+          <div
+            className="glass-panel order-modal-box"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
+              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: '#e74c3c', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <AlertTriangle size={18} /> Cancel Order
+              </h3>
+              <button onClick={() => setShowCancelModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px' }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            {cancelError && (
+              <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '10px', borderRadius: '6px', fontSize: '0.84rem', marginBottom: '12px' }}>
+                {cancelError}
+              </div>
+            )}
+
+            <form onSubmit={handleCancelSubmit}>
+              <div className="form-group">
+                <label className="form-label" htmlFor="cancel-reason">Reason for Cancellation</label>
+                <select
+                  id="cancel-reason"
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  className="form-input"
+                  style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+                >
+                  <option value="Placed order by mistake">Placed order by mistake</option>
+                  <option value="Changed dining preference">Changed dining preference</option>
+                  <option value="Wait time too long">Wait time too long</option>
+                  <option value="Want to change ordered dishes">Want to change ordered dishes</option>
+                  <option value="Other reason">Other reason</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="cancel-note">Additional Note (Optional)</label>
+                <textarea
+                  id="cancel-note"
+                  rows={2}
+                  placeholder="Tell our staff why..."
+                  value={cancelNote}
+                  onChange={(e) => setCancelNote(e.target.value)}
+                  className="form-input"
+                  style={{ resize: 'none' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowCancelModal(false)}
+                  className="btn btn-secondary"
+                  style={{ flex: 1, padding: '9px' }}
+                >
+                  Keep Order
+                </button>
+                <button
+                  type="submit"
+                  disabled={cancelling}
+                  className="btn btn-danger"
+                  style={{ flex: 1, padding: '9px' }}
+                >
+                  {cancelling ? 'Cancelling...' : 'Confirm Cancel'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Tax Invoice Modal */}
       {showInvoiceModal && (
         <div
-          className="invoice-modal-overlay"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-            backdropFilter: 'blur(8px)',
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '16px'
-          }}
+          className="order-modal-backdrop fade-in invoice-modal-overlay"
           onClick={() => setShowInvoiceModal(false)}
         >
           <div
-            className="glass-panel fade-in printable-invoice-card"
+            className="glass-panel printable-invoice-card"
             style={{
               maxWidth: '680px',
               width: '100%',
-              padding: '22px 26px',
+              padding: '22px 24px',
               borderRadius: '16px',
               border: '1px solid var(--border-color)',
               backgroundColor: '#0d1117',
-              maxHeight: '92vh',
+              maxHeight: '90vh',
               overflowY: 'auto',
               boxShadow: '0 25px 60px rgba(0,0,0,0.9)'
             }}
@@ -510,9 +439,9 @@ const OrderStatus = () => {
           >
             {/* Modal Actions Header (Hidden in Print) */}
             <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <FileText size={18} style={{ color: 'var(--color-gold)' }} />
-                <span style={{ fontWeight: 600, fontSize: '0.98rem', color: 'var(--text-primary)' }}>Official Tax Invoice (1 Page Layout)</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <FileText size={16} style={{ color: 'var(--color-gold)' }} />
+                <span style={{ fontWeight: 600, fontSize: '0.92rem', color: 'var(--text-primary)' }}>Customer Tax Invoice</span>
               </div>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <button
@@ -520,7 +449,7 @@ const OrderStatus = () => {
                   className="btn btn-primary btn-sm"
                   style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', fontSize: '0.82rem' }}
                 >
-                  <Printer size={14} /> Print Bill (1 Page)
+                  <Printer size={13} /> Print Bill
                 </button>
                 <button onClick={() => setShowInvoiceModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px', display: 'flex' }}>
                   <X size={18} />
@@ -528,145 +457,87 @@ const OrderStatus = () => {
               </div>
             </div>
 
-            {/* Print Container (Self-contained 1 page printable layout) */}
-            <div className="invoice-print-container" style={{ padding: '2px 0' }}>
+            {/* Print Container */}
+            <div className="invoice-print-container">
               {/* Restaurant Header */}
               <div style={{ textAlign: 'center', marginBottom: '12px', borderBottom: '2px solid rgba(197, 168, 128, 0.4)', paddingBottom: '10px' }}>
-                <h2 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.55rem', margin: '0 0 2px 0', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                <h2 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.5rem', margin: '0 0 2px 0', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
                   L'AURA GASTRONOMY
                 </h2>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-primary)', fontWeight: 600, letterSpacing: '0.5px' }}>
-                  Haute Cuisine & Fine Dining Experience
+                <p style={{ margin: '0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  Fine Indian & Chinese Fine Dining Experience
+                </p>
+                <p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  GSTIN: <strong>07AAAAA0000A1Z5</strong> • FSSAI Lic No: <strong>10020011000123</strong>
+                </p>
+              </div>
+
+              {/* Invoice Meta Grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '10px',
+                fontSize: '0.8rem',
+                backgroundColor: 'rgba(255,255,255,0.02)',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.05)',
+                marginBottom: '12px'
+              }} className="invoice-info-grid">
+                <div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>Invoice No:</span> <strong style={{ color: 'var(--color-gold)' }}>{order.invoiceNumber || `INV-${order._id.substring(18)}`}</strong></div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>Date:</span> {new Date(order.createdAt).toLocaleDateString()} {new Date(order.createdAt).toLocaleTimeString()}</div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>Dining Type:</span> {order.orderType} {order.tableNumber && `(Table ${order.tableNumber})`}</div>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                  GSTIN: 07AAACL1234F1Z5 • FSSAI Lic. No: 10018011000123
-                </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  104 Heritage Boulevard, Fine Dining District • Ph: +1 (555) 019-2834
-                </div>
-                <div style={{ marginTop: '6px' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '2px 10px',
-                    borderRadius: '12px',
-                    fontSize: '0.68rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.8px',
-                    textTransform: 'uppercase',
-                    backgroundColor: 'rgba(197, 168, 128, 0.15)',
-                    color: 'var(--color-gold)',
-                    border: '1px solid rgba(197, 168, 128, 0.3)'
-                  }}>
-                    Official Tax Invoice / Cash Receipt
-                  </span>
+                <div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>Customer:</span> <strong>{order.user?.name || order.guestName || 'Valued Guest'}</strong></div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>Payment Mode:</span> {order.paymentMethod || 'Cash'}</div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>Payment Status:</span> <strong style={{ color: order.paymentStatus === 'Paid' ? '#2ecc71' : '#e74c3c' }}>{order.paymentStatus}</strong></div>
                 </div>
               </div>
 
-              {/* Invoice Metadata - Balanced 2-column info */}
-              <div
-                className="invoice-info-grid"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1.05fr 0.95fr',
-                  gap: '10px 18px',
-                  fontSize: '0.82rem',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                  padding: '10px 14px',
-                  borderRadius: '8px',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                  marginBottom: '12px'
-                }}
-              >
-                <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '5px 10px', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Invoice No:</span>
-                  <strong style={{ color: 'var(--color-gold)', letterSpacing: '0.3px' }}>{order.invoiceNumber || `INV-${new Date().getFullYear()}-${order._id.substring(18).toUpperCase()}`}</strong>
-
-                  <span style={{ color: 'var(--text-muted)' }}>Order Ref:</span>
-                  <strong>#{order._id.substring(18)}</strong>
-
-                  <span style={{ color: 'var(--text-muted)' }}>Date & Time:</span>
-                  <span>{new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-
-                  <span style={{ color: 'var(--text-muted)' }}>Dining Mode:</span>
-                  <strong>{order.orderType} {order.tableNumber && `(Table ${order.tableNumber})`}</strong>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '5px 10px', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Billed To:</span>
-                  <strong style={{ color: 'var(--text-primary)' }}>{order.user?.name || order.guestName || 'Walk-in Guest'}</strong>
-
-                  <span style={{ color: 'var(--text-muted)' }}>Customer:</span>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{order.user?.email || 'Registered Guest'}</span>
-
-                  <span style={{ color: 'var(--text-muted)' }}>Payment Mode:</span>
-                  <strong>{order.paymentMethod || 'Cash / Counter'}</strong>
-
-                  <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-                  <div>
-                    <span style={{
-                      display: 'inline-block',
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      backgroundColor: order.paymentStatus === 'Paid' ? 'rgba(46, 204, 113, 0.15)' : 'rgba(231, 76, 60, 0.15)',
-                      color: order.paymentStatus === 'Paid' ? '#2ecc71' : '#e74c3c',
-                      border: `1px solid ${order.paymentStatus === 'Paid' ? 'rgba(46, 204, 113, 0.3)' : 'rgba(231, 76, 60, 0.3)'}`
-                    }}>
-                      {order.paymentStatus === 'Paid' ? 'PAID' : 'UNPAID'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Structured Itemized Table */}
+              {/* Items Table */}
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem', marginBottom: '12px' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1.5px solid var(--border-color)', backgroundColor: 'rgba(197, 168, 128, 0.08)' }}>
-                    <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--color-gold)', width: '8%' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--color-gold)', width: '50%' }}>Item Description</th>
-                    <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--color-gold)', width: '12%' }}>Qty</th>
-                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Rate (₹)</th>
-                    <th style={{ textAlign: 'right', padding: '6px 6px', color: 'var(--color-gold)', width: '15%' }}>Amount (₹)</th>
+                  <tr style={{ borderBottom: '1.5px solid var(--border-color)', color: 'var(--color-gold)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 4px' }}>Item Description</th>
+                    <th style={{ textAlign: 'center', padding: '6px 4px' }}>Qty</th>
+                    <th style={{ textAlign: 'right', padding: '6px 4px' }}>Rate</th>
+                    <th style={{ textAlign: 'right', padding: '6px 4px' }}>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {order.items.map((it, idx) => (
+                  {order.items.map((item, idx) => (
                     <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <td style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--text-muted)' }}>{idx + 1}</td>
-                      <td style={{ padding: '6px 8px', color: 'var(--text-primary)' }}>
-                        <div style={{ fontWeight: 600 }}>{it.menuItem?.name || 'Dish Item'}</div>
-                        {it.menuItem?.category && (
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{it.menuItem.category}</div>
-                        )}
+                      <td style={{ padding: '6px 4px' }}>
+                        <div style={{ fontWeight: 600 }}>{item.menuItem?.name || 'Dish Item'}</div>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{item.menuItem?.category || 'Culinary'}</span>
                       </td>
-                      <td style={{ textAlign: 'center', padding: '6px 4px', fontWeight: 600 }}>{it.quantity}</td>
-                      <td style={{ textAlign: 'right', padding: '6px 6px' }}>₹{it.price?.toFixed(2)}</td>
-                      <td style={{ textAlign: 'right', padding: '6px 6px', fontWeight: 600 }}>₹{(it.quantity * it.price).toFixed(2)}</td>
+                      <td style={{ textAlign: 'center', padding: '6px 4px' }}>{item.quantity}</td>
+                      <td style={{ textAlign: 'right', padding: '6px 4px' }}>₹{(item.price || 0).toFixed(2)}</td>
+                      <td style={{ textAlign: 'right', padding: '6px 4px', fontWeight: 600 }}>₹{((item.price || 0) * item.quantity).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
-              {/* Price Calculations & Tax Summary (Balanced 2-column bottom) */}
+              {/* Price Calculations & Tax Summary */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: '1.1fr 0.9fr',
+                gridTemplateColumns: '1fr 1fr',
                 gap: '12px',
                 alignItems: 'start',
                 borderTop: '1px dashed var(--border-color)',
-                paddingTop: '10px',
+                paddingTop: '8px',
                 marginBottom: '10px'
-              }}>
-                {/* Notes & GST Terms */}
+              }} className="invoice-info-grid">
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
-                  <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '3px' }}>GST & Tax Terms:</div>
-                  <div>• 5% Composite Dining GST applicable (2.5% CGST + 2.5% SGST).</div>
-                  <div>• Items once ordered and prepared cannot be refunded.</div>
+                  <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '2px' }}>GST & Tax Terms:</div>
+                  <div>• 5% Composite Dining GST (2.5% CGST + 2.5% SGST).</div>
+                  <div>• Computer generated tax receipt.</div>
                 </div>
 
-                {/* Totals Breakdown */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.82rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.82rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                     <span>Food Subtotal:</span>
                     <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>₹{(order.subtotalAmount || (order.totalAmount / 1.05)).toFixed(2)}</span>
@@ -682,7 +553,7 @@ const OrderStatus = () => {
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    fontSize: '1.1rem',
+                    fontSize: '1.05rem',
                     fontWeight: 'bold',
                     borderTop: '1.5px solid var(--border-color)',
                     paddingTop: '6px',
@@ -694,18 +565,17 @@ const OrderStatus = () => {
                 </div>
               </div>
 
-              {/* Official Receipt Footer */}
+              {/* Receipt Footer */}
               <div style={{
                 textAlign: 'center',
                 fontSize: '0.72rem',
                 color: 'var(--text-muted)',
                 borderTop: '1px dashed var(--border-color)',
-                paddingTop: '8px'
+                paddingTop: '6px'
               }}>
-                <p style={{ fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 2px 0' }}>
+                <p style={{ fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
                   Thank you for dining with L'AURA! Please visit us again.
                 </p>
-                <p style={{ margin: 0, fontSize: '0.68rem' }}>Computer Generated Tax Receipt • No physical signature required.</p>
               </div>
             </div>
           </div>
@@ -713,16 +583,137 @@ const OrderStatus = () => {
       )}
 
       <style>{`
-        @media (max-width: 800px) {
-          .order-status-layout {
+        .order-status-responsive-grid {
+          display: grid;
+          grid-template-columns: 1.35fr 1fr;
+          gap: 20px;
+          align-items: start;
+        }
+
+        .order-stepper-container {
+          display: flex;
+          justify-content: space-between;
+          position: relative;
+          margin: 32px 0 16px;
+        }
+
+        .stepper-track-bg {
+          position: absolute;
+          top: 18px;
+          left: 20px;
+          right: 20px;
+          height: 2px;
+          background-color: rgba(255,255,255,0.08);
+          z-index: 1;
+        }
+
+        .stepper-track-fill {
+          position: absolute;
+          top: 18px;
+          left: 20px;
+          height: 2px;
+          background-color: var(--color-gold);
+          z-index: 2;
+          transition: width 0.5s ease;
+        }
+
+        .stepper-step-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          z-index: 3;
+          position: relative;
+          width: 25%;
+        }
+
+        .stepper-node-circle {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: var(--transition-smooth);
+        }
+
+        .stepper-node-circle.current {
+          background-color: var(--color-gold);
+          border: 2px solid var(--color-gold);
+          color: var(--bg-primary);
+          box-shadow: 0 0 14px rgba(197, 168, 128, 0.6);
+        }
+
+        .stepper-node-circle.active {
+          background-color: #1f2833;
+          border: 2px solid var(--color-gold);
+          color: var(--color-gold);
+        }
+
+        .stepper-node-circle.inactive {
+          background-color: #0b0c10;
+          border: 2px solid var(--border-color);
+          color: var(--text-muted);
+        }
+
+        .stepper-step-label {
+          font-size: 0.72rem;
+          margin-top: 6px;
+          text-align: center;
+          text-transform: uppercase;
+          letter-spacing: 0.3px;
+        }
+
+        .stepper-step-label.active {
+          color: var(--color-gold);
+          font-weight: 700;
+        }
+
+        .stepper-step-label.inactive {
+          color: var(--text-muted);
+          font-weight: 500;
+        }
+
+        .order-modal-backdrop {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.75);
+          backdrop-filter: blur(8px);
+          z-index: 10000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+        }
+
+        .order-modal-box {
+          max-width: 440px;
+          width: 100%;
+          padding: 22px;
+          border-radius: 16px;
+          border: 1px solid var(--border-color);
+          background: rgba(20, 24, 33, 0.96);
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        @media (max-width: 768px) {
+          .order-status-responsive-grid {
             grid-template-columns: 1fr !important;
           }
         }
-        @media (max-width: 540px) {
-          .invoice-info-grid {
-            grid-template-columns: 1fr !important;
+
+        @media (max-width: 480px) {
+          .stepper-node-circle {
+            width: 30px;
+            height: 30px;
+          }
+          .stepper-track-bg, .stepper-track-fill {
+            top: 15px;
+          }
+          .stepper-step-label {
+            font-size: 0.65rem;
           }
         }
+
         @media print {
           html, body {
             background: #ffffff !important;

@@ -14,7 +14,7 @@ const CartSlideNotification = () => {
       const timer = setTimeout(() => {
         setVisible(false);
         dismissNotification();
-      }, 4500);
+      }, 4000);
 
       return () => clearTimeout(timer);
     }
@@ -47,15 +47,15 @@ const CartSlideNotification = () => {
       <div
         className="glass-panel"
         style={{
-          padding: '16px',
+          padding: '14px 16px',
           borderRadius: '16px',
           border: '1px solid var(--color-gold)',
-          backgroundColor: 'rgba(20, 24, 33, 0.95)',
+          backgroundColor: 'rgba(20, 24, 33, 0.96)',
           backdropFilter: 'blur(16px)',
           boxShadow: '0 16px 36px rgba(0, 0, 0, 0.6), 0 0 15px rgba(197, 168, 128, 0.25)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px'
+          gap: '10px'
         }}
       >
         {/* Header row */}
@@ -95,8 +95,8 @@ const CartSlideNotification = () => {
             src={lastAddedItem.imageUrl || 'https://images.unsplash.com/photo-1546833998-877b37c2e5c6?w=120&auto=format&fit=crop&q=80'}
             alt={lastAddedItem.name}
             style={{
-              width: '48px',
-              height: '48px',
+              width: '46px',
+              height: '46px',
               borderRadius: '10px',
               objectFit: 'cover',
               border: '1px solid var(--border-color)',
@@ -106,7 +106,7 @@ const CartSlideNotification = () => {
 
           <div style={{ flex: 1, minWidth: 0 }}>
             <h4 style={{
-              fontSize: '0.92rem',
+              fontSize: '0.9rem',
               fontWeight: 600,
               color: 'var(--text-primary)',
               whiteSpace: 'nowrap',
@@ -117,7 +117,7 @@ const CartSlideNotification = () => {
             </h4>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2px' }}>
               <span style={{ color: 'var(--color-gold)', fontWeight: 'bold', fontSize: '0.92rem' }}>
-                ${lastAddedItem.price?.toFixed(2)}
+                ₹{lastAddedItem.price?.toFixed(2)}
               </span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                 {getCartCount()} {getCartCount() === 1 ? 'item' : 'items'} in cart
@@ -139,7 +139,7 @@ const CartSlideNotification = () => {
             boxShadow: '0 4px 12px rgba(197, 168, 128, 0.25)'
           }}
         >
-          <ShoppingBag size={15} /> View Cart (${getCartTotal().toFixed(2)}) <ArrowRight size={15} />
+          <ShoppingBag size={15} /> View Cart (₹{getCartTotal().toFixed(2)}) <ArrowRight size={15} />
         </button>
       </div>
 
@@ -154,9 +154,9 @@ const CartSlideNotification = () => {
             transform: translateY(0) scale(1);
           }
         }
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
           .cart-slide-toast {
-            bottom: 16px !important;
+            bottom: 74px !important;
             right: 16px !important;
             left: 16px !important;
             max-width: 100% !important;

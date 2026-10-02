@@ -121,36 +121,40 @@ const AdminTables = () => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 3.5vw, 2.3rem)', color: 'var(--color-gold)' }}>Physical Table Map</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Configure dining tables layout. Click on any table block to toggle its operational state.</p>
+          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)', color: 'var(--color-gold)' }}>
+            Physical Tables Map
+          </h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem' }}>
+            Configure dining floor layout. Tap any table card to cycle status (Available / Occupied / Reserved).
+          </p>
         </div>
         {!showAddForm && (
-          <button onClick={() => setShowAddForm(true)} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '0.85rem' }}>
-            <Plus size={16} /> Add Table
+          <button onClick={() => setShowAddForm(true)} className="btn btn-primary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Plus size={14} /> Add Table
           </button>
         )}
       </div>
 
       {error && (
-        <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '12px', borderRadius: '6px', fontSize: '0.88rem', marginBottom: '18px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
+        <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '10px', borderRadius: '6px', fontSize: '0.86rem', marginBottom: '16px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
           {error}
         </div>
       )}
 
       {success && (
-        <div style={{ color: '#2ecc71', backgroundColor: 'rgba(46, 204, 113, 0.1)', padding: '12px', borderRadius: '6px', fontSize: '0.88rem', marginBottom: '18px', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
+        <div style={{ color: '#2ecc71', backgroundColor: 'rgba(46, 204, 113, 0.1)', padding: '10px', borderRadius: '6px', fontSize: '0.86rem', marginBottom: '16px', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
           {success}
         </div>
       )}
 
       {/* Add Table Form */}
       {showAddForm && (
-        <div className="glass-panel" style={{ padding: '20px', marginBottom: '28px', maxWidth: '500px' }}>
-          <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.2rem', marginBottom: '14px' }}>Configure Table</h3>
-          <form onSubmit={handleCreate} style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
-            <div className="form-group" style={{ marginBottom: 0, flex: '1 1 140px' }}>
+        <div className="glass-panel" style={{ padding: '18px', marginBottom: '22px', maxWidth: '480px', borderRadius: '14px' }}>
+          <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.15rem', marginBottom: '12px' }}>Configure Dining Table</h3>
+          <form onSubmit={handleCreate} style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+            <div className="form-group" style={{ marginBottom: 0, flex: '1 1 130px' }}>
               <label className="form-label" htmlFor="table-num">Table Number</label>
               <input
                 id="table-num"
@@ -162,8 +166,8 @@ const AdminTables = () => {
                 className="form-input"
               />
             </div>
-            <div className="form-group" style={{ marginBottom: 0, flex: '1 1 140px' }}>
-              <label className="form-label" htmlFor="table-cap">Capacity (Guests)</label>
+            <div className="form-group" style={{ marginBottom: 0, flex: '1 1 130px' }}>
+              <label className="form-label" htmlFor="table-cap">Capacity</label>
               <select
                 id="table-cap"
                 value={capacity}
@@ -176,9 +180,9 @@ const AdminTables = () => {
                 ))}
               </select>
             </div>
-            <div style={{ display: 'flex', gap: '8px', width: '100%', marginTop: '8px' }}>
-              <button type="button" onClick={() => setShowAddForm(false)} className="btn btn-secondary" style={{ flex: 1, padding: '9px' }}>Cancel</button>
-              <button type="submit" className="btn btn-primary" style={{ flex: 1, padding: '9px' }}>Save</button>
+            <div style={{ display: 'flex', gap: '8px', width: '100%', marginTop: '6px' }}>
+              <button type="button" onClick={() => setShowAddForm(false)} className="btn btn-secondary btn-sm" style={{ flex: 1 }}>Cancel</button>
+              <button type="submit" className="btn btn-primary btn-sm" style={{ flex: 1 }}>Save Table</button>
             </div>
           </form>
         </div>
@@ -190,25 +194,25 @@ const AdminTables = () => {
           <RefreshCw className="spin" size={32} style={{ color: 'var(--color-gold)' }} />
         </div>
       ) : tables.length === 0 ? (
-        <div className="glass-panel" style={{ padding: '48px 20px', textAlign: 'center' }}>
-          <Grid size={36} style={{ color: 'var(--color-gold)', opacity: 0.5, marginBottom: '14px' }} />
-          <p style={{ color: 'var(--text-muted)' }}>No tables registered. Add some to permit dine-in checkouts.</p>
+        <div className="glass-panel" style={{ padding: '48px 20px', textAlign: 'center', borderRadius: '14px' }}>
+          <Grid size={36} style={{ color: 'var(--color-gold)', opacity: 0.5, marginBottom: '12px' }} />
+          <p style={{ color: 'var(--text-muted)' }}>No tables registered yet. Add tables to allow customers to pick tables during checkout.</p>
         </div>
       ) : (
         <div>
-          {/* Status Color Guide */}
-          <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#2ecc71' }} />
-              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Available</span>
+          {/* Status Color Legend */}
+          <div style={{ display: 'flex', gap: '14px', marginBottom: '16px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ width: '9px', height: '9px', borderRadius: '50%', backgroundColor: '#2ecc71' }} />
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Available</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#e74c3c' }} />
-              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Occupied</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ width: '9px', height: '9px', borderRadius: '50%', backgroundColor: '#e74c3c' }} />
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Occupied</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#f39c12' }} />
-              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Reserved</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ width: '9px', height: '9px', borderRadius: '50%', backgroundColor: '#f39c12' }} />
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Reserved</span>
             </div>
           </div>
 
@@ -218,11 +222,12 @@ const AdminTables = () => {
                 key={table._id}
                 onClick={() => handleUpdateStatus(table._id, table.status)}
                 className={`table-card ${table.status}`}
-                style={{ position: 'relative', padding: '16px 8px' }}
+                style={{ position: 'relative', padding: '14px 6px' }}
+                title="Click to toggle status (Available -> Occupied -> Reserved)"
               >
-                <span style={{ fontSize: '0.75rem', opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Table</span>
-                <span style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 'bold', lineHeight: 1.1, margin: '2px 0' }}>{table.number}</span>
-                <span style={{ fontSize: '0.72rem', opacity: 0.9 }}>{table.capacity} Seats</span>
+                <span style={{ fontSize: '0.72rem', opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Table</span>
+                <span style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)', fontWeight: 'bold', lineHeight: 1.1, margin: '2px 0' }}>{table.number}</span>
+                <span style={{ fontSize: '0.7rem', opacity: 0.9 }}>{table.capacity} Seats</span>
                 
                 {/* Manual Table Delete Button */}
                 <button
@@ -233,33 +238,25 @@ const AdminTables = () => {
                   }}
                   style={{
                     position: 'absolute',
-                    top: '6px',
-                    right: '6px',
+                    top: '5px',
+                    right: '5px',
                     background: 'none',
                     border: 'none',
                     color: 'inherit',
                     cursor: 'pointer',
-                    opacity: 0.6,
-                    padding: '4px',
+                    opacity: 0.5,
+                    padding: '3px',
                     transition: 'opacity 0.2s'
                   }}
-                  className="table-delete-btn"
-                  title="Remove Table"
+                  title="Delete Table"
                 >
-                  <Trash2 size={13} />
+                  <Trash2 size={12} />
                 </button>
               </div>
             ))}
           </div>
         </div>
       )}
-
-      <style>{`
-        .table-delete-btn:hover {
-          opacity: 1 !important;
-          color: #ff4d4d;
-        }
-      `}</style>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
+import MobileBottomNav from './components/MobileBottomNav';
 import CartSlideNotification from './components/CartSlideNotification';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
@@ -18,10 +19,10 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
             <Navbar />
             <CartSlideNotification />
-            <div style={{ flex: 1, padding: '20px 0' }}>
+            <main style={{ flex: 1, padding: '16px 0 0' }}>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/menu" element={<Menu />} />
@@ -32,7 +33,8 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
               </Routes>
-            </div>
+            </main>
+            <MobileBottomNav />
           </div>
         </Router>
       </CartProvider>

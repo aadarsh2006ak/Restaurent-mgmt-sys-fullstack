@@ -311,15 +311,16 @@ const PaymentModal = ({ isOpen, onClose, order, onPaymentSuccess, customerInfo }
       }}
     >
       <div
-        className="glass-panel"
+        className="glass-panel payment-modal-dialog-box"
         style={{
           width: '100%',
           maxWidth: '540px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
           backgroundColor: '#12131a',
           border: '1px solid rgba(212, 175, 55, 0.3)',
           borderRadius: '16px',
           boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(212, 175, 55, 0.15)',
-          overflow: 'hidden',
           position: 'relative'
         }}
       >

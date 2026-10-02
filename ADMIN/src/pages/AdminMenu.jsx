@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AdminAuthContext } from '../context/AdminAuthContext';
 import { API_BASE_URL } from '../config/api';
-import { Trash2, Edit, Plus, Check, X, RefreshCw, Image } from 'lucide-react';
+import { Trash2, Edit, Plus, Check, X, RefreshCw, Image, Sparkles } from 'lucide-react';
 
 const AdminMenu = () => {
   const { adminToken } = useContext(AdminAuthContext);
@@ -208,12 +208,16 @@ const AdminMenu = () => {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '14px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 3.5vw, 2.3rem)', color: 'var(--color-gold)' }}>Menu Management</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Configure dishes on the digital menu. Add descriptions, prices, categories, cuisine types, and photos.</p>
+          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)', color: 'var(--color-gold)' }}>
+            Menu Management
+          </h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem' }}>
+            Configure dishes, prices, Indian & Chinese cuisine tags, photos, and availability.
+          </p>
         </div>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
           {/* Cuisine quick filter */}
           <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.04)', padding: '3px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
             {['All', 'Indian', 'Chinese'].map(c => (
@@ -237,53 +241,65 @@ const AdminMenu = () => {
           </div>
 
           {!editingId && !showAddForm && (
-            <button onClick={() => { clearForm(); setShowAddForm(true); }} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}>
-              <Plus size={15} /> Add Menu Item
+            <button onClick={() => { clearForm(); setShowAddForm(true); }} className="btn btn-primary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <Plus size={14} /> Add Item
             </button>
           )}
         </div>
       </div>
 
       {error && (
-        <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '12px', borderRadius: '6px', fontSize: '0.88rem', marginBottom: '18px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
+        <div style={{ color: '#e63946', backgroundColor: 'rgba(230, 57, 70, 0.1)', padding: '10px', borderRadius: '6px', fontSize: '0.86rem', marginBottom: '16px', border: '1px solid rgba(230, 57, 70, 0.2)' }}>
           {error}
         </div>
       )}
 
       {success && (
-        <div style={{ color: '#2ecc71', backgroundColor: 'rgba(46, 204, 113, 0.1)', padding: '12px', borderRadius: '6px', fontSize: '0.88rem', marginBottom: '18px', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
+        <div style={{ color: '#2ecc71', backgroundColor: 'rgba(46, 204, 113, 0.1)', padding: '10px', borderRadius: '6px', fontSize: '0.86rem', marginBottom: '16px', border: '1px solid rgba(46, 204, 113, 0.2)' }}>
           {success}
         </div>
       )}
 
       {/* Add / Edit Form Panel */}
       {(showAddForm || editingId) && (
-        <div className="glass-panel" style={{ padding: 'clamp(18px, 3vw, 28px)', marginBottom: '32px', borderRadius: '14px', border: '1px solid var(--border-color)' }}>
-          <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.3rem', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
-            {editingId ? 'Modify Menu Item' : 'New Indian / Chinese Menu Item'}
-          </h3>
+        <div className="glass-panel" style={{ padding: 'clamp(16px, 4vw, 24px)', marginBottom: '24px', borderRadius: '14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold)', fontSize: '1.25rem' }}>
+              {editingId ? 'Edit Dish Details' : 'Add New Culinary Dish'}
+            </h3>
+            <button
+              type="button"
+              onClick={editingId ? handleCancelEdit : () => setShowAddForm(false)}
+              style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px' }}
+            >
+              <X size={18} />
+            </button>
+          </div>
+
           <form onSubmit={editingId ? handleUpdate : handleCreate}>
-            <div className="admin-menu-form-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px' }}>
+            <div className="admin-menu-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+              {/* Left Form Column */}
               <div>
                 <div className="form-group">
-                  <label className="form-label" htmlFor="dish-name">Item Name</label>
+                  <label className="form-label" htmlFor="menu-name">Dish Name</label>
                   <input
-                    id="dish-name"
+                    id="menu-name"
                     type="text"
                     required
-                    placeholder="e.g. Butter Chicken or Kung Pao Chicken"
+                    placeholder="e.g. Butter Chicken / Sichuan Noodles"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="form-input"
                   />
                 </div>
+
                 <div className="form-group">
-                  <label className="form-label" htmlFor="dish-desc">Description</label>
+                  <label className="form-label" htmlFor="menu-desc">Description & Flavors</label>
                   <textarea
-                    id="dish-desc"
+                    id="menu-desc"
                     required
-                    rows={4}
-                    placeholder="Provide authentic description of spices, cooking techniques, and sides."
+                    rows={3}
+                    placeholder="Describe ingredients, tenderness, spices, and preparation..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="form-input"
@@ -291,11 +307,11 @@ const AdminMenu = () => {
                   />
                 </div>
 
-                <div className="form-grid-2">
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div className="form-group">
-                    <label className="form-label" htmlFor="dish-cuisine">Cuisine Tradition</label>
+                    <label className="form-label" htmlFor="menu-cuisine">Cuisine Tradition</label>
                     <select
-                      id="dish-cuisine"
+                      id="menu-cuisine"
                       value={cuisine}
                       onChange={(e) => setCuisine(e.target.value)}
                       className="form-input"
@@ -303,83 +319,75 @@ const AdminMenu = () => {
                     >
                       <option value="Indian">🇮🇳 Indian Cuisine</option>
                       <option value="Chinese">🥢 Chinese Cuisine</option>
-                      <option value="Continental">Continental</option>
-                      <option value="Fusion">Fusion</option>
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label" htmlFor="dish-spice">Spice Level</label>
+                    <label className="form-label" htmlFor="menu-cat">Menu Category</label>
                     <select
-                      id="dish-spice"
+                      id="menu-cat"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="form-input"
+                      style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+                    >
+                      <option value="Starters">Starters / Appetizers</option>
+                      <option value="Main Course">Main Course</option>
+                      <option value="Desserts">Desserts</option>
+                      <option value="Beverages">Beverages</option>
+                      <option value="Sides">Sides & Breads</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Form Column */}
+              <div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="menu-price">Price (₹)</label>
+                    <input
+                      id="menu-price"
+                      type="number"
+                      step="0.5"
+                      min="0"
+                      required
+                      placeholder="e.g. 350"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="menu-spice">Spice Level</label>
+                    <select
+                      id="menu-spice"
                       value={spiceLevel}
                       onChange={(e) => setSpiceLevel(e.target.value)}
                       className="form-input"
                       style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
                     >
-                      <option value="None">None</option>
                       <option value="Mild">🌿 Mild</option>
                       <option value="Medium">🌶️ Medium</option>
                       <option value="Spicy">🌶️🌶️ Hot / Spicy</option>
                     </select>
                   </div>
                 </div>
-              </div>
-
-              <div>
-                <div className="form-grid-2">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="dish-price">Price ($)</label>
-                    <input
-                      id="dish-price"
-                      type="number"
-                      step="0.01"
-                      required
-                      placeholder="e.g. 22.00"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="dish-category">Category</label>
-                    <select
-                      id="dish-category"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      className="form-input"
-                      style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
-                    >
-                      {['Starters', 'Main Course', 'Desserts', 'Beverages', 'Sides'].map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="dish-image">Food Image URL</label>
+                  <label className="form-label" htmlFor="menu-img">Food Image URL</label>
                   <input
-                    id="dish-image"
-                    type="text"
-                    placeholder="https://images.unsplash.com/photo-..."
+                    id="menu-img"
+                    type="url"
+                    placeholder="https://images.unsplash.com/..."
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     className="form-input"
                   />
                 </div>
 
-                {/* Live Image Preview */}
-                {imageUrl && (
-                  <div style={{ marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: '50px', height: '50px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)', backgroundColor: '#000' }}>
-                      <img src={imageUrl} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => e.target.src = 'https://via.placeholder.com/50?text=Error'} />
-                    </div>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--color-gold)' }}>Live Image Preview</span>
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', gap: '16px', marginTop: '14px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '16px', marginTop: '12px', flexWrap: 'wrap' }}>
                   <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px', marginBottom: 0, width: 'auto' }}>
                     <input
                       id="dish-veg"
@@ -389,7 +397,7 @@ const AdminMenu = () => {
                       style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                     />
                     <label htmlFor="dish-veg" className="form-label" style={{ marginBottom: 0, cursor: 'pointer' }}>
-                      {isVeg ? '🟢 Vegetarian' : '🔴 Non-Vegetarian'}
+                      {isVeg ? '🟢 Vegetarian' : '🔴 Non-Veg'}
                     </label>
                   </div>
 
@@ -407,19 +415,17 @@ const AdminMenu = () => {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '16px', marginTop: '16px' }}>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '14px', marginTop: '14px' }}>
               <button
                 type="button"
                 onClick={editingId ? handleCancelEdit : () => setShowAddForm(false)}
-                className="btn btn-secondary"
-                style={{ padding: '8px 18px', fontSize: '0.85rem' }}
+                className="btn btn-secondary btn-sm"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="btn btn-primary"
-                style={{ padding: '8px 18px', fontSize: '0.85rem' }}
+                className="btn btn-primary btn-sm"
               >
                 {editingId ? 'Save Changes' : 'Add Item'}
               </button>
@@ -428,17 +434,17 @@ const AdminMenu = () => {
         </div>
       )}
 
-      {/* Menu List */}
+      {/* Menu List Table */}
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
           <RefreshCw className="spin" size={32} style={{ color: 'var(--color-gold)' }} />
         </div>
       ) : displayedItems.length === 0 ? (
-        <div className="glass-panel" style={{ padding: '48px 20px', textAlign: 'center' }}>
+        <div className="glass-panel" style={{ padding: '48px 20px', textAlign: 'center', borderRadius: '14px' }}>
           <p style={{ color: 'var(--text-muted)' }}>No dishes found in this category.</p>
         </div>
       ) : (
-        <div className="glass-panel" style={{ padding: '6px', borderRadius: '12px' }}>
+        <div className="glass-panel" style={{ padding: '4px', borderRadius: '14px' }}>
           <div className="table-responsive">
             <table className="admin-table">
               <thead>
@@ -448,8 +454,8 @@ const AdminMenu = () => {
                   <th>Category</th>
                   <th>Dish Name</th>
                   <th>Price</th>
-                  <th>Diet / Spice</th>
-                  <th>Availability</th>
+                  <th>Diet</th>
+                  <th>Stock</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
@@ -458,8 +464,8 @@ const AdminMenu = () => {
                   <tr key={item._id}>
                     <td>
                       <div style={{
-                        width: '42px',
-                        height: '42px',
+                        width: '40px',
+                        height: '40px',
                         borderRadius: '8px',
                         overflow: 'hidden',
                         backgroundColor: '#12161f',
@@ -474,39 +480,39 @@ const AdminMenu = () => {
                           />
                         ) : (
                           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                            <Image size={16} />
+                            <Image size={15} />
                           </div>
                         )}
                       </div>
                     </td>
                     <td>
                       <span style={{
-                        fontSize: '0.72rem',
+                        fontSize: '0.7rem',
                         fontWeight: 700,
                         color: item.cuisine === 'Chinese' ? '#e74c3c' : 'var(--color-gold)',
-                        backgroundColor: 'rgba(255,255,255,0.05)',
-                        padding: '2px 7px',
+                        backgroundColor: 'rgba(255,255,255,0.04)',
+                        padding: '2px 6px',
                         borderRadius: '6px'
                       }}>
                         {item.cuisine === 'Chinese' ? '🥢 Chinese' : '🇮🇳 Indian'}
                       </span>
                     </td>
                     <td>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', border: '1px solid var(--border-color)', padding: '2px 7px', borderRadius: '10px', textTransform: 'uppercase', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', border: '1px solid var(--border-color)', padding: '2px 6px', borderRadius: '8px', textTransform: 'uppercase', fontWeight: 600 }}>
                         {item.category}
                       </span>
                     </td>
                     <td>
-                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.92rem' }}>{item.name}</div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{item.name}</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {item.description}
                       </div>
                     </td>
-                    <td style={{ color: 'var(--color-gold)', fontWeight: 'bold', fontSize: '0.95rem' }}>
-                      ${item.price.toFixed(2)}
+                    <td style={{ color: 'var(--color-gold)', fontWeight: 'bold', fontSize: '0.92rem' }}>
+                      ₹{item.price.toFixed(2)}
                     </td>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <span style={{
                           display: 'inline-block',
                           width: '7px',
@@ -514,7 +520,7 @@ const AdminMenu = () => {
                           borderRadius: '50%',
                           backgroundColor: item.isVeg ? '#2ecc71' : '#e74c3c'
                         }} />
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                           {item.isVeg ? 'Veg' : 'Non-Veg'}
                         </span>
                       </div>
@@ -528,31 +534,31 @@ const AdminMenu = () => {
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '5px',
+                          gap: '4px',
                           color: item.isAvailable ? '#2ecc71' : '#e74c3c',
                           fontWeight: 600,
-                          fontSize: '0.82rem'
+                          fontSize: '0.78rem'
                         }}
                       >
-                        {item.isAvailable ? <Check size={15} /> : <X size={15} />}
+                        {item.isAvailable ? <Check size={14} /> : <X size={14} />}
                         {item.isAvailable ? 'In Stock' : 'Sold Out'}
                       </button>
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                      <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
                         <button
                           onClick={() => handleEditClick(item)}
                           className="btn btn-secondary btn-sm"
-                          style={{ padding: '5px 8px', display: 'flex', alignItems: 'center', gap: '3px' }}
+                          style={{ padding: '4px 7px', gap: '2px' }}
                         >
                           <Edit size={12} /> Edit
                         </button>
                         <button
                           onClick={() => handleDelete(item._id)}
                           className="btn btn-danger btn-sm"
-                          style={{ padding: '5px 8px', display: 'flex', alignItems: 'center', gap: '3px', backgroundColor: 'rgba(230,57,70,0.1)', borderColor: 'rgba(230,57,70,0.3)', color: '#e63946' }}
+                          style={{ padding: '4px 7px', gap: '2px', backgroundColor: 'rgba(230,57,70,0.1)', borderColor: 'rgba(230,57,70,0.3)', color: '#e63946' }}
                         >
-                          <Trash2 size={12} /> Delete
+                          <Trash2 size={12} />
                         </button>
                       </div>
                     </td>
